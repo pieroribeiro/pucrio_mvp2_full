@@ -1,0 +1,62 @@
+networks:
+  mvp-backend-advanced:
+    driver: bridge 
+
+services:
+  mysql:
+    image: bitnami/mysql:latest
+    container_name: server-database-mysql
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - mvp-backend-advanced
+    environment:
+      MYSQL_ROOT_PASSWORD: 142536
+      MYSQL_DATABASE: mvp2
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app142536
+  
+  python:
+    image: bitnami/python:latest
+    container_name: server-application-python
+    build: ./container-data-model
+    networks:
+      - mvp-backend-advanced
+    ports:
+      - "3001:3001"
+    environment:
+      APP_PORT: 3001
+
+  nodejs:
+    image: node:18
+    container_name: server-application-nodejs
+    build: ./container-business
+    networks:
+      - mvp-backend-advanced
+    ports:
+      - "3002:3002"
+    environment:
+      APP_PORT: 3002
+
+  api-service:
+    image: node:18
+    container_name: api-service-nodejs
+    build: ./container-api-service
+    networks:
+      - mvp-backend-advanced
+    ports:
+      - "3003:3003"
+    environment:
+      APP_PORT: 3003
+
+  frontend-service:
+    image: nginx:latest
+    container_name: frontend-static
+    build: ./container-frontend
+    networks:
+      - mvp-backend-advanced
+    ports:
+      - "3004:3004"
+    environment:
+      APP_PORT: 3004
