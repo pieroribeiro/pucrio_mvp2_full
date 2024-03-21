@@ -58,5 +58,3 @@ services:
       - mvp-backend-advanced
     ports:
       - "3004:3004"
-    environment:
-      APP_PORT: 3004
