@@ -5,7 +5,7 @@ networks:
 services:
   mysql:
     image: bitnami/mysql:latest
-    container_name: server-database-mysql
+    container_name: database-mysql
     restart: always
     ports:
       - "3000:3000"
@@ -19,7 +19,7 @@ services:
   
   python:
     image: bitnami/python:latest
-    container_name: server-application-python
+    container_name: application-python-data-model
     build: ./container-data-model
     networks:
       - mvp-backend-advanced
@@ -30,8 +30,8 @@ services:
 
   nodejs:
     image: node:18
-    container_name: server-application-nodejs
-    build: ./container-business
+    container_name: application-nodejs-loader
+    build: ./container-data-loader
     networks:
       - mvp-backend-advanced
     ports:
@@ -41,8 +41,8 @@ services:
 
   api-service:
     image: node:18
-    container_name: api-service-nodejs
-    build: ./container-api-service
+    container_name: application-nodejs-api
+    build: ./container-api
     networks:
       - mvp-backend-advanced
     ports:
@@ -52,7 +52,7 @@ services:
 
   frontend-service:
     image: nginx:latest
-    container_name: frontend-static
+    container_name: application-frontend
     build: ./container-frontend
     networks:
       - mvp-backend-advanced
