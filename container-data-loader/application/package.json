@@ -1,15 +1,14 @@
 {
-  "name": "container-api-service",
+  "name": "container-data-loader",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "load_coin": "node load-coin.js",
+    "load_crypto": "node load-crypto.js",
+    "load_news": "node load-news.js"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.19.1",
-    "helmet": "^7.1.0"
-  }
+  "dependencies": {}
 }

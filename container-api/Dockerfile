@@ -1,7 +1,13 @@
-FROM node:20
+FROM node:18
 
-WORKDIR /app
+WORKDIR /usr/src/app
+
+COPY ./application/package*.json ./
+
+RUN npm install
 
 COPY ./application .
-RUN npm install
+
+EXPOSE 3003
+
 CMD ["npm", "start"]

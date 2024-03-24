@@ -1,39 +1,49 @@
 networks:
-  mvp-backend-advanced:
+  puc-mvp:
     driver: bridge 
 
 services:
   mysql-service:
-    image: bitnami/mysql:latest
+    image: mysql:8.0
     container_name: database-mysql
     restart: always
-    ports:
-      - "3000:3000"
     networks:
-      - mvp-backend-advanced
+      - puc-mvp
     environment:
       MYSQL_ROOT_PASSWORD: 142536
       MYSQL_DATABASE: mvp2
       MYSQL_USER: app
       MYSQL_PASSWORD: app142536
+    volumes:
+      - mysql_data:/bitnami/mysql/data
+      - ./container-database/initdb:/docker-entrypoint-initdb.d
   
   model-data-service:
-    image: bitnami/python:latest
+    image: python:3.8
     container_name: application-python-data-model
     build: ./container-data-model
+    depends_on:
+      - mysql-service
     networks:
-      - mvp-backend-advanced
+      - puc-mvp
     ports:
       - "3001:3001"
     environment:
       APP_PORT: 3001
+      MYSQL_HOST: mysql-service
+      MYSQL_PORT: 3000
+      MYSQL_DATABASE: mvp2
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app142536
 
   loader-data-service:
     image: node:18
     container_name: application-nodejs-loader
     build: ./container-data-loader
+    depends_on:
+      - model-data-service
     networks:
-      - mvp-backend-advanced
+      - puc-mvp
     ports:
       - "3002:3002"
     environment:
@@ -43,18 +53,25 @@ services:
     image: node:18
     container_name: application-nodejs-api
     build: ./container-api
+    depends_on:
+      - model-data-service
     networks:
-      - mvp-backend-advanced
+      - puc-mvp
     ports:
       - "3003:3003"
     environment:
       APP_PORT: 3003
 
   frontend-service:
-    image: nginx:latest
+    image: nginx:1.24
     container_name: application-frontend
     build: ./container-frontend
+    depends_on:
+      - api-service
     networks:
-      - mvp-backend-advanced
+      - puc-mvp
     ports:
       - "3004:3004"
+
+volumes:
+  mysql_data:
