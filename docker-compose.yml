@@ -3,7 +3,7 @@ networks:
     driver: bridge 
 
 services:
-  mysql:
+  mysql-service:
     image: bitnami/mysql:latest
     container_name: database-mysql
     restart: always
@@ -17,7 +17,7 @@ services:
       MYSQL_USER: app
       MYSQL_PASSWORD: app142536
   
-  python:
+  model-data-service:
     image: bitnami/python:latest
     container_name: application-python-data-model
     build: ./container-data-model
@@ -28,7 +28,7 @@ services:
     environment:
       APP_PORT: 3001
 
-  nodejs:
+  loader-data-service:
     image: node:18
     container_name: application-nodejs-loader
     build: ./container-data-loader
