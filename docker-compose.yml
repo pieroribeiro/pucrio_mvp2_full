@@ -1,14 +1,14 @@
 networks:
-  puc-mvp:
+  puc_mvp:
     driver: bridge 
 
 services:
-  mysql-service:
+  mysql:
     image: mysql:8.0
-    container_name: database-mysql
-    restart: always
+    container_name: mysql_container
+    hostname: mysql_host
     networks:
-      - puc-mvp
+      - puc_mvp
     environment:
       MYSQL_ROOT_PASSWORD: 142536
       MYSQL_DATABASE: mvp2
@@ -16,62 +16,59 @@ services:
       MYSQL_PASSWORD: app142536
     volumes:
       - mysql_data:/bitnami/mysql/data
-      - ./container-database/initdb:/docker-entrypoint-initdb.d
+      - ./mysql_container/initdb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: mysql $$MYSQL_DATABASE -u$$MYSQL_USER -p$$MYSQL_PASSWORD -e 'SELECT 1;'
+      interval: 20s
+      timeout: 5s
+      retries: 10
   
-  model-data-service:
-    image: python:3.8
-    container_name: application-python-data-model
-    build: ./container-data-model
+  model:
+    container_name: model_container
+    hostname: model_host
+    build: ./model_container
     depends_on:
-      - mysql-service
+      mysql:
+        condition: service_healthy
     networks:
-      - puc-mvp
+      - puc_mvp
     ports:
       - "3001:3001"
     environment:
       APP_PORT: 3001
-      MYSQL_HOST: mysql-service
-      MYSQL_PORT: 3000
-      MYSQL_DATABASE: mvp2
-      MYSQL_USER: app
-      MYSQL_PASSWORD: app142536
+      DB_HOST: mysql_host
+      DB_DATABASE: mvp2
+      DB_USER: app
+      DB_PASSWORD: app142536
 
-  loader-data-service:
-    image: node:18
-    container_name: application-nodejs-loader
-    build: ./container-data-loader
-    depends_on:
-      - model-data-service
+  loader:
+    container_name: loader_container
+    hostname: loader_host
+    build: ./loader_container
     networks:
-      - puc-mvp
+      - puc_mvp
+
+  api:
+    container_name: api_container
+    hostname: api_host
+    build: ./api_container
+    networks:
+      - puc_mvp
     ports:
       - "3002:3002"
     environment:
       APP_PORT: 3002
 
-  api-service:
-    image: node:18
-    container_name: application-nodejs-api
-    build: ./container-api
-    depends_on:
-      - model-data-service
+  frontend:
+    container_name: frontend_container
+    hostname: frontend_host
+    build: ./frontend_container
     networks:
-      - puc-mvp
+      - puc_mvp
     ports:
       - "3003:3003"
     environment:
       APP_PORT: 3003
-
-  frontend-service:
-    image: nginx:1.24
-    container_name: application-frontend
-    build: ./container-frontend
-    depends_on:
-      - api-service
-    networks:
-      - puc-mvp
-    ports:
-      - "3004:3004"
 
 volumes:
   mysql_data:
