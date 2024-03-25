@@ -1,4 +1,6 @@
-CREATE TABLE IF NOT EXISTS `mvp2`.`cotacoes` (
+USE mvp2;
+
+CREATE TABLE IF NOT EXISTS `cotacoes` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `symbol` VARCHAR(10) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
@@ -7,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `mvp2`.`cotacoes` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS `mvp2`.`news` (
+CREATE TABLE IF NOT EXISTS `news` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `title` VARCHAR(300) NOT NULL,
     `url` VARCHAR(500) NOT NULL,
@@ -15,3 +17,9 @@ CREATE TABLE IF NOT EXISTS `mvp2`.`news` (
     `published_at` TIMESTAMP NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('USD', 'Dollar', 5.03, 'coin');
+INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('CAD', 'Canadian Dollar', 3.57, 'coin');
+INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('EUR', 'Euro', 5.20, 'coin');

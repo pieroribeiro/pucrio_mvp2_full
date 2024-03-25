@@ -1,5 +1,5 @@
 {
-  "name": "container-api-service",
+  "name": "api-container",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",

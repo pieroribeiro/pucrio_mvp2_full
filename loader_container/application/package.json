@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "health": "node health.js",
     "load_coin": "node load-coin.js",
     "load_crypto": "node load-crypto.js",
     "load_news": "node load-news.js"

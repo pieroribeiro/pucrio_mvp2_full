@@ -1,14 +1,12 @@
 FROM node:18
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app-002
 
 COPY ./application/package*.json ./
 
 RUN npm install
 
 COPY ./application .
-
-EXPOSE 3003
 
 RUN apt-get update && apt-get -y install cron
 
