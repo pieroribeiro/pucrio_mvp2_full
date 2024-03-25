@@ -2,6 +2,7 @@ import os
 import mysql.connector
 from flask import Flask, jsonify, request
 from typing import List
+from datetime import datetime
 
 APP_PORT = os.getenv("APP_PORT", "8080")
 app = Flask(__name__)
@@ -38,13 +39,14 @@ def get_items():
             records = cursor.fetchall()
             results = []
             for (id, symbol, name, value, type, created_at) in records:
+                created_at_iso = datetime.strptime(str(created_at), '%Y-%m-%d %H:%M:%S').isoformat()
                 results.append({
                     "id": id,
                     "symbol": symbol,
                     "name": name,
-                    "value": value,
+                    "value": float(value),
                     "type": type,
-                    "created_at": created_at
+                    "created_at":created_at_iso
                 })
 
             cursor.close()
@@ -66,13 +68,14 @@ def get_item(symbol):
             records = cursor.fetchall()
             results = []
             for (id, symbol, name, value, type, created_at) in records:
+                created_at_iso = datetime.strptime(str(created_at), '%Y-%m-%d %H:%M:%S').isoformat()
                 results.append({
                     "id": id,
                     "symbol": symbol,
                     "name": name,
-                    "value": value,
+                    "value": float(value),
                     "type": type,
-                    "created_at": created_at
+                    "created_at": created_at_iso
                 })
 
             cursor.close()

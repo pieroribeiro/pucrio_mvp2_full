@@ -18,8 +18,10 @@ CREATE TABLE IF NOT EXISTS `news` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
-
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('USD', 'Dollar', 5.03, 'coin');
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('CAD', 'Canadian Dollar', 3.57, 'coin');
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('EUR', 'Euro', 5.20, 'coin');
+
+INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('BTC-USD', 'Bitcoin', 67500.53, 'crypto');
+INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('ETH-USD', 'Ethereum', 1020.35, 'crypto');
+INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('SOL-USD', 'Solana', 150.36, 'crypto');

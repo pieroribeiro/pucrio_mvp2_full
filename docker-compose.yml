@@ -4,9 +4,9 @@ networks:
 
 services:
   mysql:
-    image: mysql:8.0
     container_name: mysql_container
     hostname: mysql_host
+    build: ./mysql_container
     networks:
       - puc_mvp
     environment:
@@ -19,7 +19,7 @@ services:
       - ./mysql_container/initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test: mysql $$MYSQL_DATABASE -u$$MYSQL_USER -p$$MYSQL_PASSWORD -e 'SELECT 1;'
-      interval: 20s
+      interval: 10s
       timeout: 5s
       retries: 10
   
@@ -29,7 +29,7 @@ services:
     build: ./model_container
     depends_on:
       mysql:
-        condition: service_completed_successfully
+        condition: service_healthy
     networks:
       - puc_mvp
     ports:
