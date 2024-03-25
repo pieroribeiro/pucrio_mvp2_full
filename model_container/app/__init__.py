@@ -1,7 +1,6 @@
 import os
 import mysql.connector
 from flask import Flask, jsonify, request
-from mysql.connector import Error
 from typing import List
 
 APP_PORT = os.getenv("APP_PORT", "8080")
