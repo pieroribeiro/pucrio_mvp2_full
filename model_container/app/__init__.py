@@ -82,7 +82,7 @@ def get_item(symbol):
             return jsonify({'results': results}), 200
         else:
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
-    except Error as e:
+    except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error get_item: {str(e)}"}), 500
 
 # Endpoint POST: Cria um novo item
@@ -109,7 +109,7 @@ def create_item():
             return jsonify({'status': 'CREATED', 'id': recordId}), 201
         else:
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500            
-    except:
+    except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error create_item: {str(e)}"}), 500
 
 # Endpoint PUT: Atualiza um item existente
@@ -132,7 +132,7 @@ def update_item(id):
             return jsonify({"status": "UPDATED", id: id}), 200
         else:
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
-    except:
+    except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error update_item: {str(e)}"}), 500
 
 # Endpoint DELETE: Deleta um item existente
@@ -149,7 +149,7 @@ def delete_item(id):
             return jsonify({"status": "DELETED", "id": id}), 200
         else:
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
-    except:
+    except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error delete_item: {str(e)}"}), 500
 
 
