@@ -108,22 +108,23 @@ def get_item_by_id(id):
         conn, cursor = connect_to_database()
         if conn.is_connected():
             cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
-            records = cursor.fetchall()
-            results = []
-            for (id, symbol, name, value, type, created_at) in records:
-                results.append({
+            record = cursor.fetchone()
+            if record:
+                result = {
                     "id": id,
                     "symbol": symbol,
                     "name": name,
                     "value": float(value),
                     "type": type,
                     "created_at": convertDatetime(created_at)
-                })
+                }
+            else:
+                result = {}
 
             cursor.close()
             conn.close()
 
-            return jsonify({'results': results}), 200
+            return jsonify({'result': result}), 200
         else:
 
             cursor.close()
@@ -271,22 +272,23 @@ def get_news_by_id(id):
         conn, cursor = connect_to_database()
         if conn.is_connected():
             cursor.execute("SELECT id, title, url, media, published_at, created_at FROM news WHERE id = %s LIMIT 1", (id,))
-            records = cursor.fetchall()
-            results = []
-            for (id, title, url, media, published_at, created_at) in records:
-                results.append({
+            record = cursor.fetchone()
+            if record:
+                result = {
                     "id": id,
                     "title": title,
                     "url": url,
                     "media": media,
                     "published_at": convertDatetime(published_at),
                     "created_at": convertDatetime(created_at)
-                })
+                }
+            else:
+                result = {}
 
             cursor.close()
             conn.close()
 
-            return jsonify({'results': results}), 200
+            return jsonify({'result': result}), 200
         else:
 
             cursor.close()
@@ -353,7 +355,7 @@ def update_news(id):
             actual_record = cursor.fetchone()
             status_message = 'NOT_FOUND'
             if actual_record:
-                cursor.execute("UPDATE news SET title = %s, url = %s, media = %s, published_at = %s WHERE id = %s", (title, url, media, published_at_obj, id))
+                cursor.execute("UPDATE news SET title = %s, url = %s, media = %s, published_at = %s WHERE id = %s LIMIT 1", (title, url, media, published_at_obj, id))
                 conn.commit()
                 cursor.execute("SELECT id, title, url, media, published_at, created_at FROM news WHERE id = %s LIMIT 1", (id,))
                 new_record = cursor.fetchone()
@@ -399,6 +401,200 @@ def delete_news(id):
 
 
 
+
+
+
+
+
+# Endpoint GET: Retorna todas as apis ativas cadastradas
+@app.route('/api', methods=['GET'])
+def get_apis():
+    try: 
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            cursor.execute(f"SELECT id, name, symbol, url, api_key, active, created_at FROM apis WHERE active = 1 ORDER BY created_at DESC LIMIT 10")
+            records = cursor.fetchall()
+            results = []
+            for (id, name, symbol, url, api_key, active, created_at) in records:
+                results.append({
+                    "id": id, 
+                    "name": name, 
+                    "symbol": symbol, 
+                    "url": url, 
+                    "api_key": api_key, 
+                    "active": active, 
+                    "created_at": convertDatetime(created_at)
+                })
+
+            cursor.close()
+            conn.close()
+
+            return jsonify({'results': results}), 200
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error get_apis: {str(e)}"}), 500
+
+
+# Endpoint GET: Retorna uma api específica pelo SYMBOL
+@app.route('/api/<str:symbol>', methods=['GET'])
+def get_api_by_id(symbol):
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            cursor.execute("SELECT id, name, symbol, url, api_key, active, created_at FROM apis WHERE symbol = %s LIMIT 1", (symbol,))
+            record = cursor.fetchone()
+            if record:
+                result = {
+                    "id": record[0], 
+                    "name": record[1], 
+                    "symbol": record[2], 
+                    "url": record[3], 
+                    "api_key": record[4], 
+                    "active": record[5], 
+                    "created_at": convertDatetime(record[6])
+                }
+
+            cursor.close()
+            conn.close()
+
+            return jsonify({'result': result}), 200
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error get_api_by_id: {str(e)}"}), 500
+
+
+# Endpoint GET: Retorna uma api específica pelo ID
+@app.route('/api/<int:id>', methods=['GET'])
+def get_api_by_id(id):
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            cursor.execute("SELECT id, name, symbol, url, api_key, active, created_at FROM apis WHERE id = %s LIMIT 1", (id,))
+            record = cursor.fetchone()
+            if record:
+                result = {
+                    "id": record[0], 
+                    "name": record[1], 
+                    "symbol": record[2], 
+                    "url": record[3], 
+                    "api_key": record[4], 
+                    "active": record[5], 
+                    "created_at": convertDatetime(record[6])
+                }
+
+            cursor.close()
+            conn.close()
+
+            return jsonify({'result': result}), 200
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error get_api_by_id: {str(e)}"}), 500
+
+
+# Endpoint POST: Cria uma nova api
+@app.route('/api', methods=['POST'])
+def create_api():
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            data = request.json
+
+            name = data['name']
+            symbol = data['symbol']
+            url = data['url']
+            api_key = data['api_key']
+            active = data['active']
+
+            cursor.execute("INSERT INTO apis (name, symbol, url, api_key, active) VALUES (%s, %s, %s, %s)", (name, symbol, url, api_key, active))
+            conn.commit()
+
+            recordId = cursor.lastrowid
+
+            cursor.close()
+            conn.close()
+
+            return jsonify({'status': 'CREATED', 'id': recordId}), 201
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error create_api: {str(e)}"}), 500
+
+
+# Endpoint PUT: Atualiza uma api existente
+@app.route('/api/<int:id>', methods=['PUT'])
+def update_api(id):
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            data = request.json
+
+            name = data['name']
+            symbol = data['symbol']
+            url = data['url']
+            api_key = data['api_key']
+            active = data['active']            
+
+            cursor.execute("SELECT NULL FROM apis WHERE id = %s LIMIT 1", (id,))
+            actual_record = cursor.fetchone()
+            status_message = 'NOT_FOUND'
+            if actual_record:
+                cursor.execute("UPDATE apis SET name = %s, symbol = %s, url = %s, api_key = %s, active = %s WHERE id = %s LIMIT 1", (name, symbol, url, api_key, active, id))
+                conn.commit()
+                cursor.execute("SELECT id, name, symbol, url, api_key, active, created_at FROM apis WHERE id = %s LIMIT 1", (id,))
+                new_record = cursor.fetchone()
+                status_message = "UPDATED"
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": status_message, "id": id, "new-record": {"id": new_record[0], "name": new_record[1], "symbol": new_record[2], "url": new_record[3], "api_key": new_record[4], "active": new_record[5], "created_at": new_record[6]}}), 200
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error update_api: {str(e)}"}), 500
+
+
+# Endpoint DELETE: Deleta uma api existente
+@app.route('/api/<int:id>', methods=['DELETE'])
+def delete_api(id):
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            cursor.execute("SELECT NULL FROM apis WHERE id = %s LIMIT 1", (id,))
+            record = cursor.fetchone()
+            status_message = 'NOT_FOUND'
+            if record:
+                cursor.execute("DELETE FROM apis WHERE id = %s LIMIT 1", (id,))
+                conn.commit()
+                status_message = 'DELETED'
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": status_message, "id": id}), 200
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error delete_api: {str(e)}"}), 500
 
 
 if __name__ == '__main__':
