@@ -8,6 +8,7 @@ RUN npm install
 
 COPY ./application .
 
+ENV APP_MODEL_HOST=model_host
 ENV APP_MODEL_PORT=3001
 
 RUN apt-get update && apt-get -y install cron

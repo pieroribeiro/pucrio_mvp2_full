@@ -26,8 +26,6 @@ services:
         condition: service_healthy
     networks:
       - puc_mvp
-    ports:
-      - "3001:3001"
 
   loader:
     container_name: loader_container
@@ -42,8 +40,6 @@ services:
     build: ./api_container
     networks:
       - puc_mvp
-    ports:
-      - "3002:3002"
 
   frontend:
     container_name: frontend_container
@@ -51,8 +47,6 @@ services:
     build: ./frontend_container
     networks:
       - puc_mvp
-    ports:
-      - "3003:3003"
 
 volumes:
   mysql_data:

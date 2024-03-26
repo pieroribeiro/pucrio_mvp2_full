@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `apis` (
     `symbol` VARCHAR(100) NOT NULL,
     `url` VARCHAR(500) NOT NULL,
     `api_key` VARCHAR(100) NOT NULL,
+    `load_symbols` VARCHAR(200) NOT NULL,
     `active` BIT NOT NULL DEFAULT 1,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (symbol)
@@ -29,8 +30,8 @@ CREATE TABLE IF NOT EXISTS `news` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO apis (`name`, `crypto`, `url`, `api_key`, `active`) VALUES ('Blockchain', 'https://api.blockchain.com/v3/exchange/tickers', '', 1);
-INSERT INTO apis (`name`, `coin`, `url`, `api_key`, `active`) VALUES ('Blockchain', 'https://v6.exchangerate-api.com/v6/pair', '2130d4fcfb2c8196725dea41', 1);
+INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) VALUES ('Exchange Rate API', 'coin', 'https://v6.exchangerate-api.com/v6/pair', '2130d4fcfb2c8196725dea41', 'USD|Dollar,EUR|Euro,CAD|Canadian Dollar', 1);
+INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) VALUES ('Blockchain API', 'crypto', 'https://api.blockchain.com/v3/exchange/tickers', '', 'BTC-USD|Bitcoin,ETH-USD|Ethereum,SOL-USD|Solana', 1);
 
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('USD', 'Dollar', 5.03, 'coin');
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('CAD', 'Canadian Dollar', 3.57, 'coin');

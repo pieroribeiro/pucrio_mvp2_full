@@ -1,8 +1,8 @@
 module.exports = (o) => {
     return {
-        symbol: o.symbol || '',
+        symbol: o.base_code || '',
         name: o.name || '',
         type: o.type || '',
-        value: o.value || ''
+        value: o.conversion_rate || ''
     }
 }
