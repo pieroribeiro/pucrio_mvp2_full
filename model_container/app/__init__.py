@@ -24,6 +24,12 @@ def connect_to_database():
     conn = mysql.connector.connect(**mysql_config)
     return conn, conn.cursor()
 
+def convertDatetime(dt, isISO = True, format = '%Y-%m-%d %H:%M:%S'):
+    if isISO:
+        return datetime.strptime(str(dt), format).isoformat()
+    else:
+        return datetime.strptime(str(dt), format)        
+
 
 # Endpoint HEALTH: Retorna se o serviço está opk
 @app.route('/health', methods=['GET'])
@@ -37,18 +43,17 @@ def get_items():
     try: 
         conn, cursor = connect_to_database()
         if conn.is_connected():
-            cursor.execute(f"SELECT id, symbol, name, value, type, created_at FROM cotacoes ORDER BY created_at DESC")
+            cursor.execute(f"SELECT id, symbol, name, value, type, created_at FROM cotacoes ORDER BY created_at DESC LIMIT 1000")
             records = cursor.fetchall()
             results = []
             for (id, symbol, name, value, type, created_at) in records:
-                created_at_iso = datetime.strptime(str(created_at), '%Y-%m-%d %H:%M:%S').isoformat()
                 results.append({
                     "id": id,
                     "symbol": symbol,
                     "name": name,
                     "value": float(value),
                     "type": type,
-                    "created_at":created_at_iso
+                    "created_at": convertDatetime(created_at)
                 })
 
             cursor.close()
@@ -56,6 +61,9 @@ def get_items():
 
             return jsonify({'results': results}), 200
         else:
+
+            cursor.close()
+            conn.close()
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error get_items: {str(e)}"}), 500
@@ -67,18 +75,17 @@ def get_items_by_symbol(symbol):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
-            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE symbol = %s ORDER BY created_at DESC", (symbol,))
+            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE symbol = %s ORDER BY created_at DESC LIMIT 1000", (symbol,))
             records = cursor.fetchall()
             results = []
             for (id, symbol, name, value, type, created_at) in records:
-                created_at_iso = datetime.strptime(str(created_at), '%Y-%m-%d %H:%M:%S').isoformat()
                 results.append({
                     "id": id,
                     "symbol": symbol,
                     "name": name,
                     "value": float(value),
                     "type": type,
-                    "created_at": created_at_iso
+                    "created_at": convertDatetime(created_at)
                 })
 
             cursor.close()
@@ -86,6 +93,9 @@ def get_items_by_symbol(symbol):
 
             return jsonify({'results': results}), 200
         else:
+
+            cursor.close()
+            conn.close()
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error get_item: {str(e)}"}), 500
@@ -97,18 +107,17 @@ def get_item_by_id(id):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
-            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s", (id,))
+            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
             records = cursor.fetchall()
             results = []
             for (id, symbol, name, value, type, created_at) in records:
-                created_at_iso = datetime.strptime(str(created_at), '%Y-%m-%d %H:%M:%S').isoformat()
                 results.append({
                     "id": id,
                     "symbol": symbol,
                     "name": name,
                     "value": float(value),
                     "type": type,
-                    "created_at": created_at_iso
+                    "created_at": convertDatetime(created_at)
                 })
 
             cursor.close()
@@ -116,6 +125,9 @@ def get_item_by_id(id):
 
             return jsonify({'results': results}), 200
         else:
+
+            cursor.close()
+            conn.close()
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error get_item: {str(e)}"}), 500
@@ -144,6 +156,9 @@ def create_item():
 
             return jsonify({'status': 'CREATED', 'id': recordId}), 201
         else:
+
+            cursor.close()
+            conn.close()
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500            
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error create_item: {str(e)}"}), 500
@@ -162,13 +177,13 @@ def update_item(id):
             value = data['value']
             type = data['type']
 
-            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s", (id,))
+            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
             actual_record = cursor.fetchone()
             status_message = 'NOT_FOUND'
             if actual_record:
-                cursor.execute("UPDATE cotacoes SET symbol = %s, name = %s, value = %s, type = %s WHERE id = %s", (symbol, name, value, type, id))
+                cursor.execute("UPDATE cotacoes SET symbol = %s, name = %s, value = %s, type = %s WHERE id = %s LIMIT 1", (symbol, name, value, type, id))
                 conn.commit()
-                cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s", (id,))
+                cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
                 new_record = cursor.fetchone()
                 status_message = "UPDATED"
 
@@ -176,6 +191,9 @@ def update_item(id):
             conn.close()
             return jsonify({"status": status_message, "id": id, "new-record": {"id": new_record[0], "symbol": new_record[1], "name": new_record[2], "value": new_record[3], "type": new_record[4], "created_at": new_record[5]}}), 200
         else:
+
+            cursor.close()
+            conn.close()
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error update_item: {str(e)}"}), 500
@@ -187,11 +205,11 @@ def delete_item(id):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
-            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s", (id,))
+            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
             record = cursor.fetchone()
             status_message = 'NOT_FOUND'
             if record:
-                cursor.execute("DELETE FROM cotacoes WHERE id = %s", (id,))
+                cursor.execute("DELETE FROM cotacoes WHERE id = %s LIMIT 1", (id,))
                 conn.commit()
                 status_message = 'DELETED'
 
@@ -199,9 +217,188 @@ def delete_item(id):
             conn.close()
             return jsonify({"status": status_message, "id": id}), 200
         else:
+
+            cursor.close()
+            conn.close()
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error delete_item: {str(e)}"}), 500
+
+
+
+
+
+
+
+
+
+# Endpoint GET: Retorna todas as notícias
+@app.route('/news', methods=['GET'])
+def get_news():
+    try: 
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            cursor.execute(f"SELECT id, title, url, media, published_at, created_at FROM news ORDER BY created_at DESC LIMIT 10")
+            records = cursor.fetchall()
+            results = []
+            for (id, title, url, media, published_at, created_at) in records:
+                results.append({
+                    "id": id,
+                    "title": title,
+                    "url": url,
+                    "media": media,
+                    "published_at": convertDatetime(published_at),
+                    "created_at": convertDatetime(created_at)
+                })
+
+            cursor.close()
+            conn.close()
+
+            return jsonify({'results': results}), 200
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error get_news: {str(e)}"}), 500
+
+
+# Endpoint GET: Retorna uma notícia específica pelo ID
+@app.route('/news/<int:id>', methods=['GET'])
+def get_news_by_id(id):
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            cursor.execute("SELECT id, title, url, media, published_at, created_at FROM news WHERE id = %s LIMIT 1", (id,))
+            records = cursor.fetchall()
+            results = []
+            for (id, title, url, media, published_at, created_at) in records:
+                results.append({
+                    "id": id,
+                    "title": title,
+                    "url": url,
+                    "media": media,
+                    "published_at": convertDatetime(published_at),
+                    "created_at": convertDatetime(created_at)
+                })
+
+            cursor.close()
+            conn.close()
+
+            return jsonify({'results': results}), 200
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error get_news_by_id: {str(e)}"}), 500
+
+
+# Endpoint POST: Cria uma nova notícia
+@app.route('/news', methods=['POST'])
+def create_news():
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            data = request.json
+
+            title = data['title']
+            url = data['url']
+            media = data['media']
+            published_at = data['published_at']
+            if published_at:
+                published_at_obj = convertDatetime(data['published_at'], False, '%Y-%m-%dT%H:%M:%S')
+            else:
+                published_at_obj = datetime.now()
+
+            cursor.execute("INSERT INTO news (title, url, media, published_at) VALUES (%s, %s, %s, %s)", (title, url, media, published_at_obj))
+            conn.commit()
+
+            recordId = cursor.lastrowid
+
+            cursor.close()
+            conn.close()
+
+            return jsonify({'status': 'CREATED', 'id': recordId}), 201
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error create_news: {str(e)}"}), 500
+
+
+# Endpoint PUT: Atualiza uma notícia existente
+@app.route('/news/<int:id>', methods=['PUT'])
+def update_news(id):
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            data = request.json
+
+            title = data['title']
+            url = data['url']
+            media = data['media']
+            
+            published_at = data['published_at']
+            if published_at:
+                published_at_obj = convertDatetime(data['published_at'], False, '%Y-%m-%dT%H:%M:%S')
+            else:
+                published_at_obj = datetime.now()
+
+            cursor.execute("SELECT NULL FROM news WHERE id = %s LIMIT 1", (id,))
+            actual_record = cursor.fetchone()
+            status_message = 'NOT_FOUND'
+            if actual_record:
+                cursor.execute("UPDATE news SET title = %s, url = %s, media = %s, published_at = %s WHERE id = %s", (title, url, media, published_at_obj, id))
+                conn.commit()
+                cursor.execute("SELECT id, title, url, media, published_at, created_at FROM news WHERE id = %s LIMIT 1", (id,))
+                new_record = cursor.fetchone()
+                status_message = "UPDATED"
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": status_message, "id": id, "new-record": {"id": new_record[0], "title": new_record[1], "url": new_record[2], "media": new_record[3], "published_at": new_record[4], "created_at": new_record[5]}}), 200
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error update_news: {str(e)}"}), 500
+
+
+# Endpoint DELETE: Deleta um item existente
+@app.route('/news/<int:id>', methods=['DELETE'])
+def delete_news(id):
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            cursor.execute("SELECT NULL FROM news WHERE id = %s LIMIT 1", (id,))
+            record = cursor.fetchone()
+            status_message = 'NOT_FOUND'
+            if record:
+                cursor.execute("DELETE FROM news WHERE id = %s LIMIT 1", (id,))
+                conn.commit()
+                status_message = 'DELETED'
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": status_message, "id": id}), 200
+        else:
+
+            cursor.close()
+            conn.close()
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error delete_news: {str(e)}"}), 500
+    
+
+
+
 
 
 if __name__ == '__main__':
