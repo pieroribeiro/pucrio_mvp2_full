@@ -24,10 +24,12 @@ def connect_to_database():
     conn = mysql.connector.connect(**mysql_config)
     return conn, conn.cursor()
 
+
 # Endpoint HEALTH: Retorna se o serviço está opk
 @app.route('/health', methods=['GET'])
 def get_health():
     return jsonify({"status": "OK"}), 200
+
 
 # Endpoint GET: Retorna todos os itens
 @app.route('/cotacoes', methods=['GET'])
@@ -58,9 +60,10 @@ def get_items():
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error get_items: {str(e)}"}), 500
 
-# Endpoint GET: Retorna um item específico
+
+# Endpoint GET: Retorna items filtrados pelo símbolo
 @app.route('/cotacoes/<string:symbol>', methods=['GET'])
-def get_item(symbol):
+def get_items_by_symbol(symbol):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -86,6 +89,37 @@ def get_item(symbol):
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error get_item: {str(e)}"}), 500
+    
+
+# Endpoint GET: Retorna item específico pelo ID
+@app.route('/cotacoes/<int:id>', methods=['GET'])
+def get_item_by_id(id):
+    try:
+        conn, cursor = connect_to_database()
+        if conn.is_connected():
+            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s", (id,))
+            records = cursor.fetchall()
+            results = []
+            for (id, symbol, name, value, type, created_at) in records:
+                created_at_iso = datetime.strptime(str(created_at), '%Y-%m-%d %H:%M:%S').isoformat()
+                results.append({
+                    "id": id,
+                    "symbol": symbol,
+                    "name": name,
+                    "value": float(value),
+                    "type": type,
+                    "created_at": created_at_iso
+                })
+
+            cursor.close()
+            conn.close()
+
+            return jsonify({'results': results}), 200
+        else:
+            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Error get_item: {str(e)}"}), 500
+    
 
 # Endpoint POST: Cria um novo item
 @app.route('/cotacoes', methods=['POST'])
@@ -97,10 +131,10 @@ def create_item():
 
             symbol = data['symbol']
             name = data['name']
-            value = data['value']
+            value = float(data['value'])
             type = data['type']
 
-            cursor.execute("INSERT INTO cotacoes (name) VALUES (%s, %s, %s, %s)", (symbol, name, value, type))
+            cursor.execute("INSERT INTO cotacoes (symbol, name, value, type) VALUES (%s, %s, %s, %s)", (symbol, name, value, type))
             conn.commit()
 
             recordId = cursor.lastrowid
@@ -114,6 +148,7 @@ def create_item():
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error create_item: {str(e)}"}), 500
 
+
 # Endpoint PUT: Atualiza um item existente
 @app.route('/cotacoes/<int:id>', methods=['PUT'])
 def update_item(id):
@@ -126,16 +161,25 @@ def update_item(id):
             name = data['name']
             value = data['value']
             type = data['type']
-            cursor.execute("UPDATE cotacoes SET symbol = %s, name = %s, value = %s, type = %s WHERE id = %s", (symbol, name, value, type, id))
-            conn.commit()
+
+            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s", (id,))
+            actual_record = cursor.fetchone()
+            status_message = 'NOT_FOUND'
+            if actual_record:
+                cursor.execute("UPDATE cotacoes SET symbol = %s, name = %s, value = %s, type = %s WHERE id = %s", (symbol, name, value, type, id))
+                conn.commit()
+                cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s", (id,))
+                new_record = cursor.fetchone()
+                status_message = "UPDATED"
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "UPDATED", id: id}), 200
+            return jsonify({"status": status_message, "id": id, "new-record": {"id": new_record[0], "symbol": new_record[1], "name": new_record[2], "value": new_record[3], "type": new_record[4], "created_at": new_record[5]}}), 200
         else:
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Error update_item: {str(e)}"}), 500
+
 
 # Endpoint DELETE: Deleta um item existente
 @app.route('/cotacoes/<int:id>', methods=['DELETE'])
@@ -143,12 +187,17 @@ def delete_item(id):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
-            cursor.execute("DELETE FROM cotacoes WHERE id = %s", (id))
-            conn.commit()
+            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s", (id,))
+            record = cursor.fetchone()
+            status_message = 'NOT_FOUND'
+            if record:
+                cursor.execute("DELETE FROM cotacoes WHERE id = %s", (id,))
+                conn.commit()
+                status_message = 'DELETED'
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "DELETED", "id": id}), 200
+            return jsonify({"status": status_message, "id": id}), 200
         else:
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:

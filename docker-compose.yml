@@ -9,14 +9,8 @@ services:
     build: ./mysql_container
     networks:
       - puc_mvp
-    environment:
-      MYSQL_ROOT_PASSWORD: 142536
-      MYSQL_DATABASE: mvp2
-      MYSQL_USER: app
-      MYSQL_PASSWORD: app142536
     volumes:
       - mysql_data:/bitnami/mysql/data
-      - ./mysql_container/initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test: mysql $$MYSQL_DATABASE -u$$MYSQL_USER -p$$MYSQL_PASSWORD -e 'SELECT 1;'
       interval: 10s
@@ -34,12 +28,6 @@ services:
       - puc_mvp
     ports:
       - "3001:3001"
-    environment:
-      APP_PORT: 3001
-      DB_HOST: mysql_host
-      DB_DATABASE: mvp2
-      DB_USER: app
-      DB_PASSWORD: app142536
 
   loader:
     container_name: loader_container
@@ -56,8 +44,6 @@ services:
       - puc_mvp
     ports:
       - "3002:3002"
-    environment:
-      APP_PORT: 3002
 
   frontend:
     container_name: frontend_container
@@ -67,8 +53,6 @@ services:
       - puc_mvp
     ports:
       - "3003:3003"
-    environment:
-      APP_PORT: 3003
 
 volumes:
   mysql_data:

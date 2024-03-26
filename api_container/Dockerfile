@@ -9,3 +9,5 @@ RUN npm install
 CMD ["npm", "run", "start"]
 
 EXPOSE 3002
+
+ENV APP_PORT=3002

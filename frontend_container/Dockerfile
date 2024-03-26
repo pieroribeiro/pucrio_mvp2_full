@@ -6,3 +6,5 @@ RUN chown -R nginx:nginx /usr/share/nginx/html
 RUN service nginx restart
 
 EXPOSE 3003
+
+ENV APP_PORT=3003
