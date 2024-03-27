@@ -11,5 +11,7 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "node-schedule": "^2.1.1"
+  }
 }

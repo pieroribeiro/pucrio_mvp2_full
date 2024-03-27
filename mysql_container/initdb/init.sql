@@ -35,6 +35,7 @@ INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) 
 INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) VALUES ('News API', 'news', 'https://newsapi.org/v2/top-headlines', '47a44c3467c84467a0ccd7ae0db9ad9b', 'country=br&category=business&pageSize=10', 1);
 
 
+/*
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('USD', 'Dollar', 5.03, 'coin');
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('CAD', 'Canadian Dollar', 3.57, 'coin');
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('EUR', 'Euro', 5.20, 'coin');
@@ -42,3 +43,4 @@ INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('EUR', 'Euro', 
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('BTC-USD', 'Bitcoin', 67500.53, 'crypto');
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('ETH-USD', 'Ethereum', 1020.35, 'crypto');
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('SOL-USD', 'Solana', 150.36, 'crypto');
+*/

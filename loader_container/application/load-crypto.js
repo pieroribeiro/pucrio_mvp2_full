@@ -52,7 +52,7 @@ const init = (apiEndpoint) => {
             console.log("LOAD-CRYPTO: [ERROR] API não encontrada")
         }
     }).catch(e => {
-        console.log(e)        
+        console.log(`LOAD-CRYPTO: [ERROR] Erro ao carregar dados da API Model (${apiEndpoint}): Message: ${e.message}`)
     })
 }
 
