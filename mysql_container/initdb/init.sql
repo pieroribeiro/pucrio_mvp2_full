@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS `news` (
 
 INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) VALUES ('Exchange Rate API', 'coin', 'https://v6.exchangerate-api.com/v6/pair', '2130d4fcfb2c8196725dea41', 'USD|Dollar,EUR|Euro,CAD|Canadian Dollar', 1);
 INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) VALUES ('Blockchain API', 'crypto', 'https://api.blockchain.com/v3/exchange/tickers', '', 'BTC-USD|Bitcoin,ETH-USD|Ethereum,SOL-USD|Solana', 1);
+INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) VALUES ('News API', 'news', 'https://newsapi.org/v2/top-headlines', '47a44c3467c84467a0ccd7ae0db9ad9b', 'country=br&category=business&pageSize=10', 1);
+
 
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('USD', 'Dollar', 5.03, 'coin');
 INSERT INTO cotacoes (`symbol`, `name`, `value`, `type`) VALUES ('CAD', 'Canadian Dollar', 3.57, 'coin');

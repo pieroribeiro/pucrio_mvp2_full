@@ -1,3 +1,3 @@
 module.exports = (api, params) => {
-    return fetch(api, params).then(res => res.json())
+    return fetch(api, params)
 }

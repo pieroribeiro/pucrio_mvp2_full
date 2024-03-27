@@ -111,12 +111,12 @@ def get_item_by_id(id):
             record = cursor.fetchone()
             if record:
                 result = {
-                    "id": id,
-                    "symbol": symbol,
-                    "name": name,
-                    "value": float(value),
-                    "type": type,
-                    "created_at": convertDatetime(created_at)
+                    "id": record[0],
+                    "symbol": record[1],
+                    "name": record[2],
+                    "value": float(record[3]),
+                    "type": record[4],
+                    "created_at": convertDatetime(record[5])
                 }
             else:
                 result = {}
@@ -275,12 +275,12 @@ def get_news_by_id(id):
             record = cursor.fetchone()
             if record:
                 result = {
-                    "id": id,
-                    "title": title,
-                    "url": url,
-                    "media": media,
-                    "published_at": convertDatetime(published_at),
-                    "created_at": convertDatetime(created_at)
+                    "id": record[0],
+                    "title": record[1],
+                    "url": record[2],
+                    "media": record[3],
+                    "published_at": convertDatetime(record[4]),
+                    "created_at": convertDatetime(record[5])
                 }
             else:
                 result = {}
