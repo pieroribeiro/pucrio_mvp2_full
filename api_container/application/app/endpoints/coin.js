@@ -1,23 +1,15 @@
-const getCoin = require("../utils/getCoinExchangeRate")
-const sendToModelService = require("../services/sendToModelService")
-const apiRequest = require("../services/exchangeRate")
+const requestModelFinance = require("../services/requestModelFinance")
 
 module.exports = async (req, res) => {
     try {
-        const coin = getCoin(req.params.coin)
-        if (coin) {
-            const apiResults = await apiRequest(coin)
-            if (apiResults) {
-                await sendToModelService(apiResults)
-                res.status(200).json({status: 'OK'})
-            } else {
-                res.status(404).json({status: 'DATA_NOT_FOUND'})
-            }
+        const coinValues = await requestModelFinance(req.params.coin)
+        if (coinValues) {
+            res.status(200).json(coinValues)
         } else {
-            res.status(404).json({status: 'COIN_NOT_FOUND'})
+            res.status(404).json({status: 'DATA_NOT_FOUND'})
         }
     } catch (e) {
-        console.log(`[ERROR - LOAD EXCHANGE RATE FINANCIAL]: ${e.message}`)
+        console.log(`[ERROR - LOAD MODEL FINANCIAL DATA]: ${e.message}`)
         res.status(500).json({status: 'ERROR', message: e.message})
     }
 }

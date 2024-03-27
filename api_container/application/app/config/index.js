@@ -1,14 +1,16 @@
+const model_service_host = process.env["APP_MODEL_HOST"]
+const model_service_port = process.env["APP_MODEL_PORT"]
+
 module.exports = {
     API: {
-        EXCHANGE_RATE: {
-            AVAILABLE_COINS: ["USD", "EUR", "CAD"],
-            API_KEY: "2130d4fcfb2c8196725dea41",
-            API_URL: "https://v6.exchangerate-api.com/v6"
-        },
-        BLOCKCHAIN: {
-            AVAILABLE_COINS: ["BTC-USD", "ETH-USD", "SOL-USD"],
+        FINANCIAL: {
+            AVAILABLE_COINS: ["USD", "EUR", "CAD", "BTC-USD", "ETH-USD", "SOL-USD"],
             API_KEY: "",
-            API_URL: "https://api.blockchain.com/v3/exchange/tickers"
+            API_URL: `http://${model_service_host}:${model_service_port}/cotacoes`
+        },
+        NEWS: {
+            API_KEY: "",
+            API_URL: `http://${model_service_host}:${model_service_port}/news`            
         }
     }
 }
