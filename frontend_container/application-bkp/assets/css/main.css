@@ -9,6 +9,11 @@ body {
 
 /* styles.css */
 
+canvas {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .chart {
   height: 350px;
 }
