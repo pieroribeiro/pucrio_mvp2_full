@@ -75,7 +75,7 @@ def get_items_by_symbol(symbol):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
-            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE symbol = %s ORDER BY created_at DESC LIMIT 1000", (symbol,))
+            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE symbol = %s ORDER BY created_at ASC LIMIT 20", (symbol,))
             records = cursor.fetchall()
             results = []
             for (id, symbol, name, value, type, created_at) in records:

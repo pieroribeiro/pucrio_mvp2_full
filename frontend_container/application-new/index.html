@@ -42,58 +42,19 @@
                 <div class="tab-content tab-content-basic">
                   <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
                     <div class="row">
-                      <div class="col-sm-12">
-                        <div class="statistics-details d-flex align-items-center justify-content-between">
-                          <div>
-                            <p class="statistics-title">Bounce Rate</p>
-                            <h3 class="rate-percentage">32.53%</h3>
-                            <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>-0.5%</span></p>
-                          </div>
-                          <div>
-                            <p class="statistics-title">Page Views</p>
-                            <h3 class="rate-percentage">7,682</h3>
-                            <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p>
-                          </div>
-                          <div>
-                            <p class="statistics-title">New Sessions</p>
-                            <h3 class="rate-percentage">68.8</h3>
-                            <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p>
-                          </div>
-                          <div class="d-none d-md-block">
-                            <p class="statistics-title">Avg. Time on Site</p>
-                            <h3 class="rate-percentage">2m:35s</h3>
-                            <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p>
-                          </div>
-                          <div class="d-none d-md-block">
-                            <p class="statistics-title">New Sessions</p>
-                            <h3 class="rate-percentage">68.8</h3>
-                            <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p>
-                          </div>
-                          <div class="d-none d-md-block">
-                            <p class="statistics-title">Avg. Time on Site</p>
-                            <h3 class="rate-percentage">2m:35s</h3>
-                            <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
                       <div class="col-lg-12 d-flex flex-column">
                         <div class="row flex-grow">
                           <div class="col-6 grid-margin stretch-card">
                             <div class="card card-rounded">
-                              <div class="card-body">
+                              <div id="card-bitcoin" class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   <h4 class="card-title card-title-dash">Market Overview: BITCOIN</h4>
                                 </div>
                                 <div class="d-sm-flex align-items-center mt-1 justify-content-between">
                                   <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                                    <h2 class="me-2 fw-bold">$36,2531.00</h2>
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
                                     <h4 class="me-2">USD</h4>
-                                    <h4 class="text-success">(+1.37%)</h4>
-                                  </div>
-                                  <div class="me-3">
-                                    <div id="marketingOverview-bitcoin-legend"></div>
+                                    <h4 class="marketingOverview-value-increment"></h4>
                                   </div>
                                 </div>
                                 <div class="chartjs-bar-wrapper mt-3">
@@ -104,18 +65,15 @@
                           </div>
                           <div class="col-6 grid-margin stretch-card">
                             <div class="card card-rounded">
-                              <div class="card-body">
+                              <div id="card-ethereum" class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   <h4 class="card-title card-title-dash">Market Overview: ETHEREUM</h4>
                                 </div>
                                 <div class="d-sm-flex align-items-center mt-1 justify-content-between">
                                   <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                                    <h2 class="me-2 fw-bold">$36,2531.00</h2>
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
                                     <h4 class="me-2">USD</h4>
-                                    <h4 class="text-success">(+1.37%)</h4>
-                                  </div>
-                                  <div class="me-3">
-                                    <div id="marketingOverview-ethereum-legend"></div>
+                                    <h4 class="marketingOverview-value-increment"></h4>
                                   </div>
                                 </div>
                                 <div class="chartjs-bar-wrapper mt-3">
@@ -126,18 +84,15 @@
                           </div>
                           <div class="col-6 grid-margin stretch-card">
                             <div class="card card-rounded">
-                              <div class="card-body">
+                              <div id="card-solana" class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   <h4 class="card-title card-title-dash">Market Overview: SOLANA</h4>
                                 </div>
                                 <div class="d-sm-flex align-items-center mt-1 justify-content-between">
                                   <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                                    <h2 class="me-2 fw-bold">$36,2531.00</h2>
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
                                     <h4 class="me-2">USD</h4>
-                                    <h4 class="text-success">(+1.37%)</h4>
-                                  </div>
-                                  <div class="me-3">
-                                    <div id="marketingOverview-solana-legend"></div>
+                                    <h4 class="marketingOverview-value-increment"></h4>
                                   </div>
                                 </div>
                                 <div class="chartjs-bar-wrapper mt-3">
@@ -148,18 +103,15 @@
                           </div>
                           <div class="col-6 grid-margin stretch-card">
                             <div class="card card-rounded">
-                              <div class="card-body">
+                              <div id="card-dollar" class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   <h4 class="card-title card-title-dash">Market Overview: DOLLAR</h4>
                                 </div>
                                 <div class="d-sm-flex align-items-center mt-1 justify-content-between">
                                   <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                                    <h2 class="me-2 fw-bold">$36,2531.00</h2>
-                                    <h4 class="me-2">USD</h4>
-                                    <h4 class="text-success">(+1.37%)</h4>
-                                  </div>
-                                  <div class="me-3">
-                                    <div id="marketingOverview-dollar-legend"></div>
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
+                                    <h4 class="me-2">R$</h4>
+                                    <h4 class="marketingOverview-value-increment"></h4>
                                   </div>
                                 </div>
                                 <div class="chartjs-bar-wrapper mt-3">
@@ -170,18 +122,15 @@
                           </div>
                           <div class="col-6 grid-margin stretch-card">
                             <div class="card card-rounded">
-                              <div class="card-body">
+                              <div id="card-euro" class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   <h4 class="card-title card-title-dash">Market Overview: EURO</h4>
                                 </div>
                                 <div class="d-sm-flex align-items-center mt-1 justify-content-between">
                                   <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                                    <h2 class="me-2 fw-bold">$36,2531.00</h2>
-                                    <h4 class="me-2">USD</h4>
-                                    <h4 class="text-success">(+1.37%)</h4>
-                                  </div>
-                                  <div class="me-3">
-                                    <div id="marketingOverview-euro-legend"></div>
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
+                                    <h4 class="me-2">R$</h4>
+                                    <h4 class="marketingOverview-value-increment"></h4>
                                   </div>
                                 </div>
                                 <div class="chartjs-bar-wrapper mt-3">
@@ -192,18 +141,15 @@
                           </div>
                           <div class="col-6 grid-margin stretch-card">
                             <div class="card card-rounded">
-                              <div class="card-body">
+                              <div id="card-canadianDollar" class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   <h4 class="card-title card-title-dash">Market Overview: CANADIAN DOLLAR</h4>
                                 </div>
                                 <div class="d-sm-flex align-items-center mt-1 justify-content-between">
                                   <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                                    <h2 class="me-2 fw-bold">$36,2531.00</h2>
-                                    <h4 class="me-2">USD</h4>
-                                    <h4 class="text-success">(+1.37%)</h4>
-                                  </div>
-                                  <div class="me-3">
-                                    <div id="marketingOverview-canadianDollar-legend"></div>
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
+                                    <h4 class="me-2">R$</h4>
+                                    <h4 class="marketingOverview-value-increment"></h4>
                                   </div>
                                 </div>
                                 <div class="chartjs-bar-wrapper mt-3">
@@ -216,63 +162,11 @@
                         <div class="row flex-grow">
                           <div class="col-md-12 col-lg-12 grid-margin stretch-card">
                             <div class="card card-rounded">
-                              <div class="card-body">
+                              <div id="card-news" class="card-body">
                                 <div class="d-flex align-items-center justify-content-between mb-3">
-                                  <h4 class="card-title card-title-dash">Activities</h4>
-                                  <p class="mb-0">20 finished, 5 remaining</p>
+                                  <h4 class="card-title card-title-dash">&Uacute;ltimas Not&iacute;cias</h4>
                                 </div>
-                                <ul class="bullet-line-list">
-                                  <li>
-                                    <div class="d-flex justify-content-between">
-                                      <div><span class="text-light-green">Ben Tossell</span> assign you a task</div>
-                                      <p>Just now</p>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div class="d-flex justify-content-between">
-                                      <div><span class="text-light-green">Oliver Noah</span> assign you a task</div>
-                                      <p>1h</p>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div class="d-flex justify-content-between">
-                                      <div><span class="text-light-green">Jack William</span> assign you a task</div>
-                                      <p>1h</p>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div class="d-flex justify-content-between">
-                                      <div><span class="text-light-green">Leo Lucas</span> assign you a task</div>
-                                      <p>1h</p>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div class="d-flex justify-content-between">
-                                      <div><span class="text-light-green">Thomas Henry</span> assign you a task</div>
-                                      <p>1h</p>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div class="d-flex justify-content-between">
-                                      <div><span class="text-light-green">Ben Tossell</span> assign you a task</div>
-                                      <p>1h</p>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div class="d-flex justify-content-between">
-                                      <div><span class="text-light-green">Ben Tossell</span> assign you a task</div>
-                                      <p>1h</p>
-                                    </div>
-                                  </li>
-                                </ul>
-                                <div class="list align-items-center pt-3">
-                                  <div class="wrapper w-100">
-                                    <p class="mb-0">
-                                      <a href="#" class="fw-bold text-primary">Show all <i
-                                          class="mdi mdi-arrow-right ms-2"></i></a>
-                                    </p>
-                                  </div>
-                                </div>
+                                <ul class="bullet-line-list"></ul>
                               </div>
                             </div>
                           </div>
@@ -302,7 +196,6 @@
   <!-- container-scroller -->
   <!-- plugins:js -->
   <script src="assets/vendors/js/vendor.bundle.base.js"></script>
-  <script src="assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
   <!-- endinject -->
   <!-- Plugin js for this page -->
   <script src="assets/vendors/chart.js/Chart.min.js"></script>
