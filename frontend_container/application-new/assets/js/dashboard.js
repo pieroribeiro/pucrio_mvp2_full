@@ -5,11 +5,11 @@
   const api_host_port = "3002"
 
   const formatCurrency = (lang = 'pt-BR', coin= 'BRL', value = 0) => {
-    return new Intl.NumberFormat(lang, { style: "currency", currency: coin, maximumSignificantDigits: 2, minimumSignificantDigits: 2 }).format(value)
+    return new Intl.NumberFormat(lang, { style: "currency", currency: coin, minimumFractionDigits: 2, maximumFractionDigits: 2}).format(value)
   }
 
   const formatPercent = (val) => {
-    return new Intl.NumberFormat('pt-BR', { style: "percent", maximumSignificantDigits: 2, minimumSignificantDigits: 2 }).format(val)    
+    return new Intl.NumberFormat('pt-BR', { style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2, signDisplay: "exceptZero" }).format(val)    
   }
 
   const formatDatetime = (val) => {
@@ -25,28 +25,28 @@
 
   const loadGraph = (container, data) => {
     const marketingOverviewCanvas = document.getElementById(container);
-      new Chart(marketingOverviewCanvas, {
-        type: 'line',
-        data: {
-          datasets: [{
-            label: 'Valores',
-            data: data,
-            backgroundColor: 'rgb(75, 192, 192, 0.2)',
-            borderWidth: 0.5,
-            borderColor: 'rgba(75, 192, 192)',
-            fill: true,
-            tension: 0.4
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              display: false,
-            }
+    new Chart(marketingOverviewCanvas, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Valores',
+          data: data,
+          backgroundColor: 'rgb(75, 192, 192, 0.2)',
+          borderWidth: 0.5,
+          borderColor: 'rgba(75, 192, 192)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false,
           }
         }
-      });
+      }
+    });
   }
 
   $(function() {
