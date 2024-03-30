@@ -43,6 +43,9 @@ def get_items():
     try: 
         conn, cursor = connect_to_database()
         if conn.is_connected():
+            cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 2 DAY)")
+            conn.commit()
+
             cursor.execute(f"SELECT id, symbol, name, value, type, created_at FROM cotacoes ORDER BY created_at DESC LIMIT 1000")
             records = cursor.fetchall()
             results = []
@@ -75,6 +78,9 @@ def get_items_by_symbol(symbol):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
+            cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 2 DAY)")
+            conn.commit()
+
             cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE symbol = %s ORDER BY created_at ASC LIMIT 20", (symbol,))
             records = cursor.fetchall()
             results = []
@@ -107,6 +113,9 @@ def get_item_by_id(id):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
+            cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 2 DAY)")
+            conn.commit()
+
             cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
             record = cursor.fetchone()
             if record:
@@ -146,6 +155,9 @@ def create_item():
             name = data['name']
             value = float(data['value'])
             type = data['type']
+            
+            cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 2 DAY)")
+            conn.commit()
 
             cursor.execute("INSERT INTO cotacoes (symbol, name, value, type) VALUES (%s, %s, %s, %s)", (symbol, name, value, type))
             conn.commit()
@@ -238,7 +250,10 @@ def delete_item(id):
 def get_news():
     try: 
         conn, cursor = connect_to_database()
-        if conn.is_connected():
+        if conn.is_connected():            
+            cursor.execute("DELETE FROM news WHERE DATE(created_at) < (NOW() - INTERVAL 2 DAY)")
+            conn.commit()
+
             cursor.execute(f"SELECT id, title, url, media, published_at, created_at FROM news ORDER BY created_at DESC LIMIT 10")
             records = cursor.fetchall()
             results = []
@@ -271,6 +286,9 @@ def get_news_by_id(id):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
+            cursor.execute("DELETE FROM news WHERE DATE(created_at) < (NOW() - INTERVAL 2 DAY)")
+            conn.commit()
+
             cursor.execute("SELECT id, title, url, media, published_at, created_at FROM news WHERE id = %s LIMIT 1", (id,))
             record = cursor.fetchone()
             if record:
@@ -314,6 +332,9 @@ def create_news():
                 published_at_obj = convertDatetime(data['published_at'], False, '%Y-%m-%dT%H:%M:%S')
             else:
                 published_at_obj = datetime.now()
+            
+            cursor.execute("DELETE FROM news WHERE DATE(created_at) < (NOW() - INTERVAL 2 DAY)")
+            conn.commit()
 
             cursor.execute("INSERT INTO news (title, url, media, published_at) VALUES (%s, %s, %s, %s)", (title, url, media, published_at_obj))
             conn.commit()

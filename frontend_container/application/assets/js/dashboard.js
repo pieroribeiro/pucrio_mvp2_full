@@ -31,9 +31,9 @@
         datasets: [{
           label: 'Valores',
           data: data,
-          backgroundColor: 'rgb(75, 192, 192, 0.2)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderWidth: 0.5,
-          borderColor: 'rgba(75, 192, 192)',
+          borderColor: 'rgba(75, 192, 192, 0.6)',
           fill: true,
           tension: 0.4
         }]
@@ -73,6 +73,7 @@
           }
           
           loadGraph("marketingOverview-bitcoin", graphData)
+          console.log(`BITCOIN: ${JSON.stringify(graphData)}`)
         })
         .catch(e => {
           console.error('Erro ao carregar dados de BITCOIN', `Message: ${e.message}`)
@@ -243,6 +244,28 @@
         })
         .catch(e => {
           console.error('Erro ao carregar Noticias', `Message: ${e.message}`)
+        })
+    } 
+    
+    if ($("#card-apis").length) {
+      fetch(`${api_host}:${api_host_port}/api`, {headers: {"accept": "application/json", "Content-type": "application/json"}})
+        .then(res => res.json())
+        .then(res => {
+          if (res && res.results) {
+            res.results.forEach(item => {
+              $("#card-apis .bullet-line-list").append(`
+              <li>
+                <div class="d-flex justify-content-between">
+                  <div><span class="text-light-green">${item.name} - ${item.url}</div>
+                  <p>${formatDatetime(item.created_at)}</p>
+                </div>
+              </li>
+              `)
+            })
+          }          
+        })
+        .catch(e => {
+          console.error('Erro ao carregar APIs', `Message: ${e.message}`)
         })
     }
   });

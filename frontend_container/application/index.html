@@ -1,30 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/src/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-    <script>
-      if (localStorage.theme === 'dark' || !('theme' in localStorage)) {
-        document.querySelector('html').classList.add('dark');
-        document.querySelector('html').style.colorScheme = 'dark';
-      } else {
-        document.querySelector('html').classList.remove('dark');
-        document.querySelector('html').style.colorScheme = 'light';
-      }        
-    </script>      
-  </head>
-  <body class="font-inter antialiased bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400">
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <script>
-        if (localStorage.getItem('sidebar-expanded') == 'true') {
-            document.querySelector('body').classList.add('sidebar-expanded');
-        } else {
-            document.querySelector('body').classList.remove('sidebar-expanded');
-        }
-    </script>   
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Piero Ribeiro - PUC-Rio - MVP2</title>
+  <link rel="stylesheet" href="assets/css/vertical-layout-light/style.css" />
+  <link rel="shortcut icon" href="assets/images/favicon.png" />
+</head>
+<body class="with-welcome-text sidebar-icon-only">
+  <div class="container-scroller" style="background: #F4F5F7;">
+    <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+      <div class="navbar-menu-wrapper d-flex align-items-top">
+        <ul class="navbar-nav">
+          <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
+            <h1 class="welcome-text">Ol&aacute;, <span class="text-black fw-bold">Piero Ribeiro</span></h1>
+            <h3 class="welcome-sub-text">PUC-Rio MVP2</h3>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container-fluid page-body-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="home-tab">
+                <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="/" role="tab" aria-controls="overview" aria-selected="true">Cota&ccedil;&otilde;es</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="/news" role="tab" aria-selected="false">Not&iacute;cias</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="/admin" role="tab" aria-selected="false">Admin</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="tab-content tab-content-basic">
+                  <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
+                    <div class="row">
+                      <div class="col-lg-12 d-flex flex-column">
+                        <div class="row flex-grow">
+                          <div class="col-6 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                              <div id="card-bitcoin" class="card-body">
+                                <div class="d-sm-flex justify-content-between align-items-start">
+                                  <h4 class="card-title card-title-dash">Market Overview: BITCOIN</h4>
+                                </div>
+                                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+                                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
+                                    <h4 class="me-2">USD</h4>
+                                    <h4 class="marketingOverview-value-increment"></h4>
+                                  </div>
+                                </div>
+                                <div class="chartjs-bar-wrapper mt-3">
+                                  <canvas id="marketingOverview-bitcoin"></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                              <div id="card-ethereum" class="card-body">
+                                <div class="d-sm-flex justify-content-between align-items-start">
+                                  <h4 class="card-title card-title-dash">Market Overview: ETHEREUM</h4>
+                                </div>
+                                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+                                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
+                                    <h4 class="me-2">USD</h4>
+                                    <h4 class="marketingOverview-value-increment"></h4>
+                                  </div>
+                                </div>
+                                <div class="chartjs-bar-wrapper mt-3">
+                                  <canvas id="marketingOverview-ethereum"></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                              <div id="card-solana" class="card-body">
+                                <div class="d-sm-flex justify-content-between align-items-start">
+                                  <h4 class="card-title card-title-dash">Market Overview: SOLANA</h4>
+                                </div>
+                                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+                                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
+                                    <h4 class="me-2">USD</h4>
+                                    <h4 class="marketingOverview-value-increment"></h4>
+                                  </div>
+                                </div>
+                                <div class="chartjs-bar-wrapper mt-3">
+                                  <canvas id="marketingOverview-solana"></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                              <div id="card-dollar" class="card-body">
+                                <div class="d-sm-flex justify-content-between align-items-start">
+                                  <h4 class="card-title card-title-dash">Market Overview: DOLLAR</h4>
+                                </div>
+                                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+                                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
+                                    <h4 class="me-2">R$</h4>
+                                    <h4 class="marketingOverview-value-increment"></h4>
+                                  </div>
+                                </div>
+                                <div class="chartjs-bar-wrapper mt-3">
+                                  <canvas id="marketingOverview-dollar"></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                              <div id="card-euro" class="card-body">
+                                <div class="d-sm-flex justify-content-between align-items-start">
+                                  <h4 class="card-title card-title-dash">Market Overview: EURO</h4>
+                                </div>
+                                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+                                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
+                                    <h4 class="me-2">R$</h4>
+                                    <h4 class="marketingOverview-value-increment"></h4>
+                                  </div>
+                                </div>
+                                <div class="chartjs-bar-wrapper mt-3">
+                                  <canvas id="marketingOverview-euro"></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                              <div id="card-canadianDollar" class="card-body">
+                                <div class="d-sm-flex justify-content-between align-items-start">
+                                  <h4 class="card-title card-title-dash">Market Overview: CANADIAN DOLLAR</h4>
+                                </div>
+                                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+                                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                                    <h2 class="me-2 fw-bold marketingOverview-value"></h2>
+                                    <h4 class="me-2">R$</h4>
+                                    <h4 class="marketingOverview-value-increment"></h4>
+                                  </div>
+                                </div>
+                                <div class="chartjs-bar-wrapper mt-3">
+                                  <canvas id="marketingOverview-canadianDollar"></canvas>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Piero Ribeiro - Financial Dashboard.</span>
+            <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">Copyright © 2024. All rights reserved.</span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="assets/vendors/js/vendor.bundle.base.js"></script>
+  <script src="assets/vendors/chart.js/Chart.min.js"></script>
+  <script src="assets/js/default.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+</body>
 </html>

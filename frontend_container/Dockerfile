@@ -8,9 +8,9 @@ WORKDIR /usr/share/nginx/html
 #     apt-get install -y nodejs
 
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-COPY ./application-new .
+COPY ./application .
 
-# COPY ./application-new /var/tmp/tmp-src-app
+# COPY ./application /var/tmp/tmp-src-app
 # RUN cd /var/tmp/tmp-src-app && npm install && npm run build
 # RUN cp -r /var/tmp/tmp-src-app/dist/* ./
 # RUN rm -rf /var/tmp/tmp-src-app

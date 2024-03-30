@@ -11,6 +11,10 @@ module.exports = {
         NEWS: {
             API_KEY: "",
             API_URL: `http://${model_service_host}:${model_service_port}/news`            
+        },
+        APIS: {
+            API_KEY: "",
+            API_URL: `http://${model_service_host}:${model_service_port}/api`
         }
     }
 }

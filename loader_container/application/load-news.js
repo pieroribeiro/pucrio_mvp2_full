@@ -14,7 +14,8 @@ const init = (apiEndpoint) => {
             apiParams = {
                 headers: {
                     'accept': 'application/json',
-                    'Content-type': 'application/json'
+                    'Content-type': 'application/json',
+                    'Cache-control': 'no-cache, no-store'
                 }
             }
 
