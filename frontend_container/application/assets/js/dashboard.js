@@ -252,15 +252,50 @@
         .then(res => res.json())
         .then(res => {
           if (res && res.results) {
+            $("#card-apis #list-records").append(`
+            <li>
+              <div class="row">
+                <div class="col-lg-4 d-flex flex-column"><strong>Nome</strong></div>
+                <div class="col-lg-4 d-flex flex-column"><strong>URL</strong></div>
+                <div class="col-lg-2 d-flex flex-column"><strong>Data de Cadastro</strong></div>
+                <div class="col-lg-2 d-flex flex-column"><strong>Ações</strong></div>
+              </div>
+            </li>
+            `)            
             res.results.forEach(item => {
-              $("#card-apis .bullet-line-list").append(`
+              $("#card-apis #list-records").append(`
               <li>
-                <div class="d-flex justify-content-between">
-                  <div><span class="text-light-green">${item.name} - ${item.url}</div>
-                  <p>${formatDatetime(item.created_at)}</p>
+                <div class="row">
+                  <div class="col-lg-4 d-flex flex-column">
+                    <span class="text-light-green">${item.name}</span>
+                  </div>
+                  <div class="col-lg-4 d-flex flex-column">
+                    <span class="text-light-red">${item.url}</span>
+                  </div>
+                  <div class="col-lg-2 d-flex flex-column">
+                    <p>${formatDatetime(item.created_at)}</p>
+                  </div>
+                  <div class="col-lg-2 d-flex flex-column">
+                    <div>
+                      <button type="button" class="btn btn-warning" data-action="edit-record" data-id="${item.id}" data-toggle="modal" data-target="#modal-admin">Editar</button>
+                      <button type="button" class="btn btn-danger" data-action="delete-record" data-id="${item.id}">Excluir</button>
+                    </div>
+                  </div>
                 </div>
               </li>
               `)
+            })
+
+            $('button[data-action="edit-record"]').click((e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              $("#modal-admin").modal("show")
+            })
+
+            $('button[data-action="close-modal"]').click((e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              $("#modal-admin").modal("hide")
             })
           }          
         })

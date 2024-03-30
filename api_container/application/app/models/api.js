@@ -1,5 +1,6 @@
 module.exports = (o) => {
     return {
+        id: o.id || 0,
         name: o.name || '',
         symbol: o.symbol || '',
         url: o.url || 0,

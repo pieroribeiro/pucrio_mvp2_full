@@ -25353,6 +25353,10 @@ dl li {
   border-radius: 100%;
 }
 
+.list-style-none {
+  list-style: none;
+}
+
 /* Modals */
 .modal .modal-dialog {
   margin-top: 100px;
