@@ -278,7 +278,7 @@
                   <div class="col-lg-2 d-flex flex-column">
                     <div>
                       <button type="button" class="btn btn-warning" data-action="edit-record" data-id="${item.id}" data-toggle="modal" data-target="#modal-admin">Editar</button>
-                      <button type="button" class="btn btn-danger" data-action="delete-record" data-id="${item.id}">Excluir</button>
+                      <button type="button" class="btn btn-danger" data-action="delete-record" data-id="${item.id}" data-name="${item.name}">Excluir</button>
                     </div>
                   </div>
                 </div>
@@ -296,6 +296,24 @@
               e.stopPropagation();
               e.preventDefault();
               $("#modal-admin").modal("hide")
+            })
+
+            $('button[data-action="delete-record"]').click((e) => {
+              const data = e.target.dataset
+              if (confirm(`Deseja realmente excluir a API ${data["name"]}?`)) {
+                fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'DELETE', headers: {"accept": "application/json", "Content-type": "application/json"}})
+                  .then(res => res.json())
+                  .then(res => {
+                    if (res && res.status && res.id && res.status === 'DELETED' && res.id > 0) {
+                      showAlert(`A API ${data["name"]} (${res.id}) foi excluída.`, 'success')
+                    } else {
+                      showAlert(`A Api ${data["name"]} não encontrada para ser excluída.`, 'warning')
+                    }
+                  })
+                  .catch(e => {
+                    showAlert(`Houve um problema ao tentar excluir a API. Erro: ${e.message}`, 'danger')
+                  })
+              }
             })
           }          
         })
