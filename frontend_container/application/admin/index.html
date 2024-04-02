@@ -8,17 +8,7 @@
   <link rel="shortcut icon" href="../assets/images/favicon.png" />
 </head>
 <body class="with-welcome-text sidebar-icon-only">
-  <!-- start: alert
-  Available colors: ["alert-primary", "alert-secondary", "alert-success", "alert-danger", "alert-warning", "alert-info", "alert-light", "alert-dark"]
-  -->
-  <div id="alert" class="alert fade" role="alert">
-    <strong>Atenção!</strong> <span id="message"></span>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <!-- end: alert -->
-  
+  <!-- Available colors: ["alert-primary", "alert-secondary", "alert-success", "alert-danger", "alert-warning", "alert-info", "alert-light", "alert-dark"] -->  
   <div class="container-scroller" style="background: #F4F5F7;">
     <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
       <div class="navbar-menu-wrapper d-flex align-items-top">
@@ -61,6 +51,8 @@
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                   <h4 class="card-title card-title-dash">APIs Utilizadas</h4>
                                 </div>
+                                <div id="alertContainer"></div>
+                                <!-- ALERT -->
                                 <ul id="list-records" class="list-style-none"></ul>
                               </div>
                             </div>
