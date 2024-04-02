@@ -1,15 +1,36 @@
+const routes = require('express').Router({ mergeParams: true })
+
 const requestModelApi = require("../services/requestModelApi")
 
-module.exports = async (req, res) => {
+routes.get("/:id([0-9]+)?", async (req, res) => {
     try {
-        const apiValues = await requestModelApi(req.params.coin)
-        if (apiValues) {
-            res.status(200).json(apiValues)
-        } else {
-            res.status(404).json({status: 'DATA_NOT_FOUND'})
+        const id = req.params.id && req.params.id != '' ? req.params.id : null
+        const APIResponse = await requestModelApi.get(id)
+        let statusCode = 404
+        if (APIResponse && APIResponse["results"]) {
+            statusCode = 200
         }
+
+        return res.status(statusCode).json(APIResponse)
     } catch (e) {
         console.log(`[ERROR - LOAD MODEL API DATA]: ${e.message}`)
-        res.status(500).json({status: 'ERROR', message: e.message})
+        return res.status(500).json({results: [], status: 'ERROR', message: e.message})
     }
-}
+})
+
+routes.delete("/:id([0-9]+)", async (req, res) => {
+    try {
+        const APIResponse = await requestModelApi.remove(req.params.id)
+        let statusCode = 404
+        if (APIResponse && APIResponse["id"] && APIResponse["id"] > 0) {
+            statusCode = 200
+        }
+
+        return res.status(statusCode).json(APIResponse)
+    } catch (e) {
+        console.log(`[ERROR - LOAD MODEL API DATA]: ${e.message}`)
+        return res.status(500).json({id: -1, status: 'ERROR', message: e.message})
+    }
+})
+
+module.exports = routes

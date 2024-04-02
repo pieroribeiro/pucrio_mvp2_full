@@ -9,8 +9,8 @@ const init = (apiEndpoint) => {
     getAPIFromDB(apiEndpoint)
     .then(res => res.json())
     .then(resAPI => {        
-        if (resAPI && resAPI.result && resAPI.result.id) {
-            const apiData = modelApi(resAPI.result)
+        if (resAPI && resAPI.results && resAPI.results.id) {
+            const apiData = modelApi(resAPI.results)
             apiParams = {
                 headers: {
                     'accept': 'application/json',

@@ -11,8 +11,8 @@ const init = (apiEndpoint) => {
     getAPIFromDB(apiEndpoint)
     .then(res => res.json())
     .then(resApi => {        
-        if (resApi && resApi.result && resApi.result.id) {
-            const apiData = modelApi(resApi.result)
+        if (resApi && resApi.results && resApi.results.id) {
+            const apiData = modelApi(resApi.results)
             apiParams = {
                 headers: {
                     'accept': 'application/json',
@@ -30,6 +30,8 @@ const init = (apiEndpoint) => {
                     const coin = sym.split("|")
                     const coinSymbol = coin[0] || ''
                     const coinName = coin[1] || ''
+
+                    console.log(`${apiData.url}/${coinSymbol}/BRL`)
 
                     loadExternalAPIData(`${apiData.url}/${coinSymbol}/BRL`, apiParams)
                     .then(res => res.json())

@@ -451,7 +451,7 @@ def get_apis():
             cursor.close()
             conn.close()
 
-            return jsonify({'results': results}), 200
+            return jsonify({'results': results, "status": "OK", "message": None}), 200
         else:
 
             cursor.close()
@@ -484,7 +484,7 @@ def get_api_by_symbol(symbol):
             cursor.close()
             conn.close()
 
-            return jsonify({'result': result}), 200
+            return jsonify({'results': result, "status": "OK", "message": None}), 200
         else:
 
             cursor.close()
@@ -517,7 +517,7 @@ def get_api_by_id(id):
             cursor.close()
             conn.close()
 
-            return jsonify({'result': result}), 200
+            return jsonify({'results': result, "status": "OK", "message": None}), 200
         else:
 
             cursor.close()
@@ -550,7 +550,7 @@ def create_api():
             cursor.close()
             conn.close()
 
-            return jsonify({'status': 'CREATED', 'id': recordId}), 201
+            return jsonify({'id': recordId, "status": "CREATED", "message": None}), 201
         else:
 
             cursor.close()
@@ -587,7 +587,7 @@ def update_api(id):
 
             cursor.close()
             conn.close()
-            return jsonify({"status": status_message, "id": id, "new-record": {"id": new_record[0], "name": new_record[1], "symbol": new_record[2], "url": new_record[3], "api_key": new_record[4], "load_symbols": new_record[5], "active": new_record[6], "created_at": new_record[7]}}), 200
+            return jsonify({"status": status_message, "message": None, "id": id, "new-record": {"id": new_record[0], "name": new_record[1], "symbol": new_record[2], "url": new_record[3], "api_key": new_record[4], "load_symbols": new_record[5], "active": new_record[6], "created_at": new_record[7]}}), 200
         else:
 
             cursor.close()
@@ -609,18 +609,18 @@ def delete_api(id):
             if record:
                 cursor.execute("DELETE FROM apis WHERE id = %s LIMIT 1", (id,))
                 conn.commit()
-                status_message = 'DELETED'
+                status_message = 'OK'
 
             cursor.close()
             conn.close()
-            return jsonify({"status": status_message, "id": id}), 200
+            return jsonify({"id": id, "status": status_message, "message": None}), 200
         else:
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+            return jsonify({"id": 0, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Error delete_api: {str(e)}"}), 500
+        return jsonify({"id": 0, "status": "ERROR", "message": f"Error delete_api: {str(e)}"}), 500
 
 
 if __name__ == '__main__':
