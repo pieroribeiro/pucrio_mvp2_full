@@ -28,32 +28,57 @@ const loadGraph = (container, data) => {
   });
 }
 
-function loadCoinValues (endpoint, coinType, container, graphicsContainer, formatValueFN, formatIncrementFN) {
+function writeIncrement (container, value) {
+  if (value > 0) {
+    $(`${container} .marketingOverview-value-increment`).removeClass("text-danger").addClass('text-success')
+  } else if (value < 0) {
+    $(`${container} .marketingOverview-value-increment`).removeClass("text-success").addClass('text-danger')
+  } else {
+    $(`${container} .marketingOverview-value-increment`).removeClass("text-success").removeClass('text-danger')
+  }  
+}
+
+function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
   fetch(endpoint, {headers: {"accept": "application/json", "Content-type": "application/json"}})
     .then(res => res.json())
     .then(res => {
       const data = res.results.map(item => parseFloat(item.value))
       const graphData = res.results.map(item => {return {x: item.created_at, y: parseFloat(item.value)}})
+      const container = $("#graphics")
 
-      $(`#${container} .marketingOverview-value`).text(formatValueFN((coinType == 'crypto') ? 'en-US' : 'pt-BR', (coinType == 'crypto') ? 'USD' : 'BRL', data[data.length - 1]))
-      if (data[data.length - 2]) {   
-        const value = calculateIncrement(data[data.length - 2], data[data.length - 1])
-        if (value > 0) {
-          $(`#${container} .marketingOverview-value-increment`).text(`(${formatIncrementFN(value)})`)
-          $(`#${container} .marketingOverview-value-increment`).removeClass("text-danger").addClass('text-success')
-        } else if (value < 0) {
-          $(`#${container} .marketingOverview-value-increment`).text(`(${formatIncrementFN(value)})`)
-          $(`#${container} .marketingOverview-value-increment`).removeClass("text-success").addClass('text-danger')
-        } else {
-          $(`#${container} .marketingOverview-value-increment`).text("")
-          $(`#${container} .marketingOverview-value-increment`).removeClass("text-success").removeClass('text-danger')
-        }
+      if (data[data.length - 2]) {
+        const containerID = res.results[0]["symbol"]
+        const containerName = res.results[0]["name"]
+        const incrementValue = calculateIncrement(data[data.length - 2], data[data.length - 1])
+
+        container.append(`
+          <div class="col-6 grid-margin stretch-card">
+            <div class="card card-rounded">
+              <div id="card-${containerID}" class="card-body">
+                <div class="d-sm-flex justify-content-between align-items-start">
+                  <h4 class="card-title card-title-dash">Market Overview: ${containerName}</h4>
+                </div>
+                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                    <h2 class="me-2 fw-bold marketingOverview-value">${ formatValueFN('pt-BR', 'BRL', data[data.length - 1]) }</h2>
+                    <h4 class="me-2">BRL</h4>
+                    <h4 class="marketingOverview-value-increment">${(parseInt(incrementValue) === 0) ? `` : `(${formatIncrementFN(incrementValue)})`}</h4>
+                  </div>
+                </div>
+                <div class="chartjs-bar-wrapper mt-3">
+                  <canvas id="marketingOverview-${containerID}"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        `)
+        writeIncrement (`#card-${containerID}`, incrementValue)
+        
+        loadGraph(`marketingOverview-${containerID}`, graphData)
       }
-      
-      loadGraph(graphicsContainer, graphData)
     })
     .catch(e => {
-      console.error('Erro ao carregar dados financeiros.', `Message: ${e.message}`)
+      console.error('Erro ao carregar dados financeiros.', `Message: ${e.message}`, e)
     })
 }
 
@@ -78,7 +103,6 @@ function loadNewsValues () {
       console.error('Erro ao carregar Noticias', `Message: ${e.message}`)
     })
 }
-
 
 function loadListAPIs () {
   fetch(`${api_host}:${api_host_port}/api`, {headers: {"accept": "application/json", "Content-type": "application/json"}})
@@ -224,47 +248,14 @@ function loadListAPIs () {
   })
 
   $(function() {
-    if ($("#card-bitcoin").length) {
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/BTC-USD`, 'crypto', 'card-bitcoin', 'marketingOverview-bitcoin', formatCurrency, formatPercent)
-      // setInterval(() => {
-      //   loadCoinValues (`${api_host}:${api_host_port}/api/finance/BTC-USD`, 'crypto', 'card-bitcoin', 'marketingOverview-bitcoin', formatCurrency, formatPercent)        
-      // }, 60000)
+    if ($("#graphics").length) {
+      loadCoinValues (`${api_host}:${api_host_port}/api/finance/BTC`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/api/finance/ETH`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/api/finance/ARS`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/api/finance/USD`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/api/finance/EUR`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/api/finance/CAD`, formatCurrency, formatPercent)
     }
-
-    if ($("#card-ethereum").length) {
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/ETH-USD`, 'crypto', 'card-ethereum', 'marketingOverview-ethereum', formatCurrency, formatPercent)
-      // setInterval(() => {
-      //   loadCoinValues (`${api_host}:${api_host_port}/api/finance/ETH-USD`, 'crypto', 'card-ethereum', 'marketingOverview-ethereum', formatCurrency, formatPercent)
-      // }, 60000)
-    }
-
-    if ($("#card-solana").length) {
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/SOL-USD`, 'crypto', 'card-solana', 'marketingOverview-solana', formatCurrency, formatPercent)
-      // setInterval(() => {
-      //   loadCoinValues (`${api_host}:${api_host_port}/api/finance/SOL-USD`, 'crypto', 'card-solana', 'marketingOverview-solana', formatCurrency, formatPercent)
-      // }, 60000)
-    }    
-
-    if ($("#card-dollar").length) {
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/USD`, 'coin', 'card-dollar', 'marketingOverview-dollar', formatCurrency, formatPercent)
-      // setInterval(() => {
-      //   loadCoinValues (`${api_host}:${api_host_port}/api/finance/USD`, 'coin', 'card-dollar', 'marketingOverview-dollar', formatCurrency, formatPercent)
-      // }, 60000)
-    }    
-
-    if ($("#card-euro").length) {
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/EUR`, 'coin', 'card-euro', 'marketingOverview-euro', formatCurrency, formatPercent)
-      // setInterval(() => {
-      //   loadCoinValues (`${api_host}:${api_host_port}/api/finance/EUR`, 'coin', 'card-euro', 'marketingOverview-euro', formatCurrency, formatPercent)
-      // }, 60000)
-    }
-
-    if ($("#card-canadianDollar").length) {
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/CAD`, 'coin', 'card-canadianDollar', 'marketingOverview-canadianDollar', formatCurrency, formatPercent)
-      // setInterval(() => {
-      //   loadCoinValues (`${api_host}:${api_host_port}/api/finance/CAD`, 'coin', 'card-canadianDollar', 'marketingOverview-canadianDollar', formatCurrency, formatPercent)
-      // }, 60000)
-    }  
     
     if ($("#card-news").length) {
       loadNewsValues()      

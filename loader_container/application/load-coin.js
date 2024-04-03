@@ -2,7 +2,7 @@ const getAPIFromDB = require("./utils/getAPIsFromDB")
 const loadExternalAPIData = require("./utils/loadExternalAPIData")
 const saveService = require("./utils/saveService")
 const modelApi = require("./model/model-api")
-const model = require("./model/exchange-rate")
+const model = require("./model/awesome-coin")
 const endpoint = "/api/coin"
 
 
@@ -26,33 +26,32 @@ const init = (apiEndpoint) => {
             }
 
             if (apiData.load_symbols.length > 0) {
-                apiData.load_symbols.split(',').forEach(sym => {
-                    const coin = sym.split("|")
-                    const coinSymbol = coin[0] || ''
-                    const coinName = coin[1] || ''
+                const apiParameters = apiData.load_symbols.split(',').map(sym => sym.replace(/\|.*/g, '')).join(',')
+                const returnObjects = apiData.load_symbols.split(',').map(sym => sym.replace('-', ''))
 
-                    loadExternalAPIData(`${apiData.url}/${coinSymbol}/BRL`, apiParams)
-                    .then(res => res.json())
-                    .then(resExternalAPI => {
-                        if (resExternalAPI.result === "success") {
-                            resExternalAPI.name = coinName
-                            saveService('/cotacoes', model(resExternalAPI))
-                            .then(res => res.json())
-                            .then(resSave => {
-                                if (resSave && resSave.status == 'CREATED') {
-                                    console.log(`SAVE-COIN: Dados salvos com sucesso. Coin ${resSave.id}`, resSave)
-                                } else {
-                                    console.log(`SAVE-COIN: [ERROR] Ocorreu um erro`, resSave)
-                                }
-                            }).catch(e => {
-                                console.log(`SAVE-COIN: [ERROR] Erro ao salvar dados da API Externa (/${coinSymbol}/BRL) no Banco de Dados: ${apiData.url}. Message: ${e.message}`)
-                            })
-                        } else {
-                            console.log(`SAVE-COIN: [ERROR] Erro ao retornar dados da API Externa (/${coinSymbol}/BRL): ${apiData.url}. Message: ${resExternalAPI["error-type"]}`)
-                        }
-                    }).catch(e => {
-                        console.log(`LOAD-COIN: [ERROR] Erro ao carregar dados da API Externa (/${coinSymbol}/BRL): ${apiData.url}. Message: ${e.message}`)
+                loadExternalAPIData(`${apiData.url}/${apiParameters}`, apiParams)
+                .then(res => res.json())
+                .then(resExternalAPI => {
+                    returnObjects.forEach(item => {
+                        const arrCoin = item.split('|')
+                        const coinObject = arrCoin[0]
+                        resExternalAPI[coinObject].type = arrCoin[1]
+                        const coinData = resExternalAPI[coinObject]
+
+                        saveService('/cotacoes', model(coinData))
+                        .then(res => res.json())
+                        .then(resSave => {
+                            if (resSave && resSave.status == 'CREATED') {
+                                console.log(`SAVE-COIN: Dados salvos com sucesso. Coin ${resSave.id}`, resSave)
+                            } else {
+                                console.log(`SAVE-COIN: [ERROR] Ocorreu um erro`, resSave)
+                            }
+                        }).catch(e => {
+                            console.log(`SAVE-COIN: [ERROR] Erro ao salvar dados da API Externa (/${coinData.code}) no Banco de Dados: ${apiData.url}. Message: ${e.message}`)
+                        })
                     })
+                }).catch(e => {
+                    console.log(`LOAD-COIN: [ERROR] Erro ao carregar dados da API Externa (${apiData.url}/${apiParameters}). Message: ${e.message}`)
                 })
             }
         } else {
