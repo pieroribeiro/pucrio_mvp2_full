@@ -10,7 +10,7 @@ const endpoint = "/api/coin"
 const init = (apiEndpoint) => {
     getAPIFromDB(apiEndpoint)
     .then(res => res.json())
-    .then(resApi => {              
+    .then(resApi => {
         if (resApi && resApi.results && resApi.results.id) {
             const apiData = modelApi(resApi.results)
             apiParams = {
