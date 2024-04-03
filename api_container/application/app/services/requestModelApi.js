@@ -11,7 +11,11 @@ const get = (id) => {
                 if (res && res.results && res.status) {
                     switch (res.status) {
                         case 'OK':
-                            return resolve({results: res.results.map(item => model(item)), status: 'OK', message: null})
+                            if (id && parseInt(id) > 0) {
+                                return resolve({results: model(res.results), status: 'OK', message: null})
+                            } else {
+                                return resolve({results: res.results.map(item => model(item)), status: 'OK', message: null})
+                            }
                         case 'ERROR':
                             return reject({results: [], status: 'ERROR', message: res.message})
                         default:

@@ -1,25 +1,6 @@
 const api_host = "http://localhost"
 const api_host_port = "3002"
 
-const formatCurrency = (lang = 'pt-BR', coin= 'BRL', value = 0) => {
-  return new Intl.NumberFormat(lang, { style: "currency", currency: coin, minimumFractionDigits: 2, maximumFractionDigits: 2}).format(value)
-}
-
-const formatPercent = (val) => {
-  return new Intl.NumberFormat('pt-BR', { style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2, signDisplay: "exceptZero" }).format(val)    
-}
-
-const formatDatetime = (val) => {
-  const d = new Date(val)
-  return `${d.getDate()}/${d.getMonth()}/${d.getFullYear()} às ${d.getHours()}:${d.getMinutes()}`
-}
-
-const calculateIncrement = (valueBefore, valueAfter) => {
-  valueBefore = parseFloat(valueBefore)
-  valueAfter = parseFloat(valueAfter)
-  return ((valueAfter - valueBefore) / valueBefore)
-}
-
 const loadGraph = (container, data) => {
   const marketingOverviewCanvas = document.getElementById(container);
 
@@ -130,7 +111,7 @@ function loadListAPIs () {
             </div>
             <div class="col-lg-2 d-flex flex-column">
               <div>
-                <button type="button" class="btn btn-warning" data-action="edit-record" data-id="${item.id}" data-toggle="modal" data-target="#modal-admin">Editar</button>
+                <button type="button" class="btn btn-warning" data-action="edit-record" data-id="${item.id}" data-name="${item.name}" data-toggle="modal" data-target="#modal-admin">Editar</button>
                 <button type="button" class="btn btn-danger" data-action="delete-record" data-id="${item.id}" data-name="${item.name}">Excluir</button>
               </div>
             </div>
@@ -142,7 +123,75 @@ function loadListAPIs () {
       $('button[data-action="edit-record"]').click((e) => {
         e.stopPropagation();
         e.preventDefault();
-        $("#modal-admin").modal("show")
+        const data = e.target.dataset
+
+        fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'GET', headers: {"accept": "application/json", "Content-type": "application/json"}})
+          .then(res => res.json())
+          .then(res => {
+            if (res && res.status === 'OK') {              
+              $("#modal-admin .modal-body").empty()
+
+              $("#modal-admin .modal-body").append(`
+                <form class="formEditApi">
+                  <input type="hidden" name="id" value="${res.results["id"]}">
+                  <ul>
+                    <li>
+                      Nome:<br>
+                      <input type="text" name="name" value="${res.results["name"]}">
+                    </li>
+                    <li>
+                      Símbolo:<br>
+                      <input type="text" name="symbol" value="${res.results["symbol"]}">
+                    </li>
+                    <li>
+                      URL:<br>
+                      <input type="text" name="url" value="${res.results["url"]}">
+                    </li>
+                    <li>
+                      API Key:<br>
+                      <input type="text" name="api_key" value="${res.results["api_key"]}">
+                    </li>
+                    <li>
+                      Símbolos para carregar:<br>
+                      <input type="text" name="load_symbols" value="${res.results["load_symbols"]}">
+                    </li>
+                    <li>
+                      Status:<br>
+                      <select name="status">
+                        <option value="1" ${(res.results["active"] === 1) ? 'selected' : ''}></option>
+                        <option value="0" ${(res.results["active"] === 0) ? 'selected' : ''}></option>
+                      </select>
+                    </li>
+                    <li>
+                      <button class="btn btn-primary btnSaveApi">Salvar</button>
+                      <button class="btn btn-secondary btnCancelApi">Cancelar</button>
+                    </li>
+                  </ul>
+                </form>
+              `)
+
+              $('#modal-admin .modal-body .btnCancelApi').on('click', (e) => {
+                e.stopPropagation()
+                e.preventDefault()
+
+                $('#modal-admin button[data-action="close-modal"]').click()
+              })
+
+              $('#modal-admin .modal-body .btnSaveApi').on('click', (e) => {
+                e.stopPropagation()
+                e.preventDefault()
+                console.log( $("#modal-admin .formEditApi").serialize() )
+              })
+
+              
+              $("#modal-admin").modal("show")
+            } else {
+              showAlert(`A Api ${data["name"]} não encontrada.`, 'warning')
+            }
+          })
+          .catch(e => {
+            showAlert(`A Api ${data["name"]} não encontrada para ser excluída.`, 'danger')
+          })
       })
 
       $('button[data-action="close-modal"]').click((e) => {
