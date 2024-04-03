@@ -8,7 +8,7 @@ APP_PORT = os.getenv("APP_PORT", "8080")
 app = Flask(__name__)
 
 # Configurações do banco de dados
-DB_HOST = os.getenv("DB_HOST", "mysql")
+DB_HOST = os.getenv("DB_HOST", "mysql-example")
 DB_USER = os.getenv("DB_USER", "example_user")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "example_password")
 DB_DATABASE = os.getenv("DB_DATABASE", "example_db")
@@ -199,6 +199,8 @@ def update_item(id):
                 cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
                 new_record = cursor.fetchone()
                 status_message = "UPDATED"
+            else:
+                new_record = []
 
             cursor.close()
             conn.close()
@@ -480,6 +482,8 @@ def get_api_by_symbol(symbol):
                     "active": record[6], 
                     "created_at": convertDatetime(record[7])
                 }
+            else:
+                result = {}
 
             cursor.close()
             conn.close()
@@ -513,6 +517,8 @@ def get_api_by_id(id):
                     "active": record[6], 
                     "created_at": convertDatetime(record[7])
                 }
+            else:
+                result: {}
 
             cursor.close()
             conn.close()
@@ -584,6 +590,8 @@ def update_api(id):
                 cursor.execute("SELECT id, name, symbol, url, api_key, active, created_at FROM apis WHERE id = %s LIMIT 1", (id,))
                 new_record = cursor.fetchone()
                 status_message = "UPDATED"
+            else:
+                new_record = []
 
             cursor.close()
             conn.close()

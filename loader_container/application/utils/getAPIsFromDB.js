@@ -1,12 +1,11 @@
 module.exports = (enpoint) => {
-    const modelServicePort = process.env.APP_MODEL_PORT || 3000
-    const modelServiceHostname = process.env.APP_MODEL_HOST || "host"
-    // console.log(`http://${modelServiceHostname}:${modelServicePort}${enpoint}`)
+    const interceptorServiceHostname = process.env.APP_INTERCEPTOR_HOST || "host"
+    const interceptorServicePort = process.env.APP_INTERCEPTOR_PORT || 3000
     const reqParams = {
         headers:{
             'accept': 'application/json',
             'Content-type': 'application/json'
         }
     }
-    return fetch(`http://${modelServiceHostname}:${modelServicePort}${enpoint}`, reqParams)
+    return fetch(`http://${interceptorServiceHostname}:${interceptorServicePort}${enpoint}`, reqParams)
 }

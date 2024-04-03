@@ -48,7 +48,7 @@ const init = (apiEndpoint) => {
             console.log("LOAD-NEWS: [ERROR] API não encontrada")
         }
     }).catch(e => {
-        console.log(`LOAD-CRYPTO: [ERROR] Erro ao carregar dados da API Model (${apiEndpoint}): Message: ${e.message}`)       
+        console.log(`LOAD-CRYPTO: [ERROR] Erro ao carregar dados da API INTERCEPTOR (${apiEndpoint}): Message: ${e.message}`)       
     })
 }
 

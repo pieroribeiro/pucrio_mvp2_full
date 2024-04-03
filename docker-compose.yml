@@ -3,10 +3,10 @@ networks:
     driver: bridge 
 
 services:
-  mysql:
-    container_name: mysql_container
-    hostname: mysql_host
-    build: ./mysql_container
+  database:
+    container_name: database_container
+    hostname: database_host
+    build: ./database_container
     networks:
       - puc_mvp
     volumes:
@@ -17,12 +17,12 @@ services:
       timeout: 5s
       retries: 10
   
-  model:
-    container_name: model_container
-    hostname: model_host
-    build: ./model_container
+  interceptor:
+    container_name: interceptor_container
+    hostname: interceptor_host
+    build: ./interceptor_container
     depends_on:
-      mysql:
+      database:
         condition: service_healthy
     ports:
       - "3001:3001"

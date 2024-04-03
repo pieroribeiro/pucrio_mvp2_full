@@ -1,7 +1,6 @@
 module.exports = (endpoint, coin) => {
-    const modelServicePort = process.env.APP_MODEL_PORT || 3000
-    const modelServiceHostname = process.env.APP_MODEL_HOST || "host"
-    // console.log(`http://${modelServiceHostname}:${modelServicePort}${endpoint}`)
+    const interceptorServiceHostname = process.env.APP_INTERCEPTOR_HOST || "host"
+    const interceptorServicePort = process.env.APP_INTERCEPTOR_PORT || 3000
     const reqParams = {
         method: 'POST',
         body: JSON.stringify(coin),
@@ -10,5 +9,5 @@ module.exports = (endpoint, coin) => {
             'Content-type': 'application/json'
         }
     }
-    return fetch(`http://${modelServiceHostname}:${modelServicePort}${endpoint}`, reqParams)
+    return fetch(`http://${interceptorServiceHostname}:${interceptorServicePort}${endpoint}`, reqParams)
 }

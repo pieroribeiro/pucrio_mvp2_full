@@ -10,7 +10,7 @@ const endpoint = "/api/coin"
 const init = (apiEndpoint) => {
     getAPIFromDB(apiEndpoint)
     .then(res => res.json())
-    .then(resApi => {        
+    .then(resApi => {              
         if (resApi && resApi.results && resApi.results.id) {
             const apiData = modelApi(resApi.results)
             apiParams = {
@@ -31,23 +31,25 @@ const init = (apiEndpoint) => {
                     const coinSymbol = coin[0] || ''
                     const coinName = coin[1] || ''
 
-                    console.log(`${apiData.url}/${coinSymbol}/BRL`)
-
                     loadExternalAPIData(`${apiData.url}/${coinSymbol}/BRL`, apiParams)
                     .then(res => res.json())
                     .then(resExternalAPI => {
-                        resExternalAPI.name = coinName
-                        saveService('/cotacoes', model(resExternalAPI))
-                        .then(res => res.json())
-                        .then(resSave => {
-                            if (resSave && resSave.status == 'CREATED') {
-                                console.log(`SAVE-COIN: Dados salvos com sucesso. Coin ${resSave.id}`, resSave)
-                            } else {
-                                console.log(`SAVE-COIN: [ERROR] Ocorreu um erro`, resSave)
-                            }
-                        }).catch(e => {
-                            console.log(`SAVE-COIN: [ERROR] Erro ao salvar dados da API Externa (/${coinSymbol}/BRL) no Banco de Dados: ${apiData.url}. Message: ${e.message}`)
-                        })
+                        if (resExternalAPI.result === "success") {
+                            resExternalAPI.name = coinName
+                            saveService('/cotacoes', model(resExternalAPI))
+                            .then(res => res.json())
+                            .then(resSave => {
+                                if (resSave && resSave.status == 'CREATED') {
+                                    console.log(`SAVE-COIN: Dados salvos com sucesso. Coin ${resSave.id}`, resSave)
+                                } else {
+                                    console.log(`SAVE-COIN: [ERROR] Ocorreu um erro`, resSave)
+                                }
+                            }).catch(e => {
+                                console.log(`SAVE-COIN: [ERROR] Erro ao salvar dados da API Externa (/${coinSymbol}/BRL) no Banco de Dados: ${apiData.url}. Message: ${e.message}`)
+                            })
+                        } else {
+                            console.log(`SAVE-COIN: [ERROR] Erro ao retornar dados da API Externa (/${coinSymbol}/BRL): ${apiData.url}. Message: ${resExternalAPI["error-type"]}`)
+                        }
                     }).catch(e => {
                         console.log(`LOAD-COIN: [ERROR] Erro ao carregar dados da API Externa (/${coinSymbol}/BRL): ${apiData.url}. Message: ${e.message}`)
                     })
@@ -57,7 +59,7 @@ const init = (apiEndpoint) => {
             console.log("LOAD-COIN: [ERROR] API não encontrada")
         }
     }).catch(e => {
-        console.log(`LOAD-CRYPTO: [ERROR] Erro ao carregar dados da API Model (${apiEndpoint}): Message: ${e.message}`)    
+        console.log(`LOAD-COIN: [ERROR] Erro ao carregar dados da API INTERCEPTOR (${apiEndpoint}): Message: ${e.message}`, e)    
     })
 }
 
