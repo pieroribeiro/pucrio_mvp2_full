@@ -1,9 +1,11 @@
 function showAlert(message, type) {
-    $('#alertContainer').prepend(`<div class="alert alert-${type} fade show" role="alert"><strong>Atenção!</strong> <span class="message">${message}</span></div>`)
+    if (! $("#alert").length) {
+        $('#alertContainer').prepend(`<div id="alert" class="alert alert-${type} fade show" role="alert"><strong>Atenção!</strong> <span class="message">${message}</span></div>`)
 
-    setTimeout(() => {
-        $(".alert").alert('close')
-    }, 5000)
+        setTimeout(() => {
+            $('#alertContainer').empty()
+        }, 5000)
+    }
 }
 
 const formatCurrency = (lang = 'pt-BR', coin= 'BRL', value = 0) => {

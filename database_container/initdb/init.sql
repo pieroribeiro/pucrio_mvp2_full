@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS `apis` (
     `name` VARCHAR(100) NOT NULL,
     `symbol` VARCHAR(100) NOT NULL,
     `url` VARCHAR(500) NOT NULL,
-    `api_key` VARCHAR(100) NOT NULL,
-    `load_symbols` VARCHAR(200) NOT NULL,
-    `active` BIT NOT NULL DEFAULT 1,
+    `api_key` VARCHAR(200) NOT NULL,
+    `load_symbols` VARCHAR(300) NOT NULL,
+    `active` TINYINT(1) NOT NULL DEFAULT 1,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (symbol)
 );

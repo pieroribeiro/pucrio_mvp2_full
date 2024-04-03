@@ -4,7 +4,7 @@ const model = require("../models/coin")
 
 module.exports = (coin) => {
     return new Promise((resolve, reject) => {
-        Fetch(`${config.API.FINANCIAL.API_URL}/${coin}`, {headers:{'accept': 'application/json'}})
+        Fetch(`${config.API.FINANCIAL.API_URL}/${coin}`, {headers:{'accept': 'application/json', 'Content-type': 'application/json'}})
             .then(res => res.json())
             .then(res => {
                 if(res && res.results){

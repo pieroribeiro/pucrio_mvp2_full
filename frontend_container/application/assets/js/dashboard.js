@@ -104,6 +104,114 @@ function loadNewsValues () {
     })
 }
 
+function listAPIsActions () {
+  $('button[data-action="edit-record"]').click((e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const data = e.target.dataset
+
+    fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'GET', headers: {"accept": "application/json", "Content-type": "application/json"}})
+      .then(res => res.json())
+      .then(res => {
+        if (res && res.status === 'OK') {              
+          $("#modal-admin .modal-body").empty()
+
+          $("#modal-admin .modal-body").append(`
+            <form class="formEditApi">
+              <input type="hidden" name="id" value="${res.results["id"]}">
+              <div class="form-group">
+                <label for="api_name">Nome da API</label>
+                <input type="text" class="form-control" id="api_name" name="name" placeholder="Nome da API" value="${res.results["name"]}">
+              </div>
+              <div class="form-group">
+                <label for="api_symbol">Símbolo</label>
+                <input type="text" class="form-control" id="api_symbol" name="symbol" placeholder="Nome da API" value="${res.results["symbol"]}">
+              </div>
+              <div class="form-group">
+                <label for="api_url">API URL</label>
+                <input type="text" class="form-control" id="api_url" name="url" placeholder="URL da API" value="${res.results["url"]}">
+              </div>
+              <div class="form-group">
+                <label for="api_key">API Key</label>
+                <input type="text" class="form-control" id="api_key" name="api_key" placeholder="API Key" value="${res.results["api_key"]}">
+              </div>
+              <div class="form-group">
+                <label for="api_load_symbols">Símbolos da API</label>
+                <input type="text" class="form-control" id="api_load_symbols" name="load_symbols" placeholder="Símbolos da API" value="${res.results["load_symbols"]}">
+              </div>
+              <div class="form-group">
+                <label for="api_active">Status</label>
+                <select class="form-control" id="api_active" name="active">
+                  <option value="1" ${(res.results["active"] === 1) ? 'selected' : ''}>Ativo</option>
+                  <option value="0" ${(res.results["active"] === 0) ? 'selected' : ''}>Inativo</option>
+                </select>
+              </div>
+            </form>
+          `)
+          
+          $("#modal-admin").modal("show")
+        } else {
+          showAlert(`A Api ${data["name"]} não encontrada.`, 'warning')
+        }
+      })
+      .catch(e => {
+        showAlert(`A Api ${data["name"]} não encontrada para ser excluída.`, 'danger')
+      })
+  })
+
+  $('button[data-action="delete-record"]').click((e) => {
+    const data = e.target.dataset
+    if (confirm(`Deseja realmente excluir a API ${data["name"]}?`)) {
+      fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'DELETE', headers: {"accept": "application/json", "Content-type": "application/json"}})
+        .then(res => res.json())
+        .then(res => {
+          if (res && res.status && res.id && res.status === 'OK' && res.id > 0) {
+            showAlert(`A API ${data["name"]} (${res.id}) foi excluída.`, 'success')
+            loadListAPIs()
+          } else {
+            showAlert(`A Api ${data["name"]} não encontrada para ser excluída.`, 'warning')
+            loadListAPIs()
+          }
+        })
+        .catch(e => {
+          showAlert(`Houve um problema ao tentar excluir a API. Erro: ${e.message}`, 'danger')
+          loadListAPIs()
+        })
+    }
+  })
+
+  $('button[data-action="close-modal"]').click((e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    $("#modal-admin").modal("hide")
+  })
+
+  $('#modal-admin button[data-action="save-record"]').on('click', (e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    
+    const data = objectifyForm($("#modal-admin .formEditApi").serializeArray())
+    fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'PUT', body: JSON.stringify(data), headers: {"accept": "application/json", "Content-type": "application/json"}})
+    .then(res => res.json())
+    .then(res => {
+      if (res && res.status && res.status === 'OK') {
+        $('button[data-action="close-modal"]').click()
+        showAlert(`Os dados foram atualizados com sucesso.`, 'success')
+        loadListAPIs()
+      } else {
+        $('button[data-action="close-modal"]').click()
+        showAlert(`Os dados não foram atualizados. Por favor, tente novamente mais tarde.`, 'warning')
+        loadListAPIs()
+      }
+    })
+    .catch(e => {
+      $('button[data-action="close-modal"]').click()
+      showAlert(`Os dados não podem ser alterados neste momento. Tente novamente mais tarde. Erro: ${e.message}`, 'danger')
+      loadListAPIs()
+    })
+  })
+}
+
 function loadListAPIs () {
   fetch(`${api_host}:${api_host_port}/api`, {headers: {"accept": "application/json", "Content-type": "application/json"}})
   .then(res => res.json())
@@ -144,92 +252,7 @@ function loadListAPIs () {
         `)
       })
 
-      $('button[data-action="edit-record"]').click((e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        const data = e.target.dataset
-
-        fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'GET', headers: {"accept": "application/json", "Content-type": "application/json"}})
-          .then(res => res.json())
-          .then(res => {
-            if (res && res.status === 'OK') {              
-              $("#modal-admin .modal-body").empty()
-
-              $("#modal-admin .modal-body").append(`
-                <form class="formEditApi">
-                  <input type="hidden" name="id" value="${res.results["id"]}">
-                  <div class="form-group">
-                    <label for="api_name">Nome da API</label>
-                    <input type="text" class="form-control" id="api_name" name="api_name" placeholder="Nome da API" value="${res.results["name"]}">
-                  </div>
-                  <div class="form-group">
-                    <label for="api_symbol">Símbolo</label>
-                    <input type="text" class="form-control" id="api_symbol" name="api_symbol" placeholder="Nome da API" value="${res.results["symbol"]}">
-                  </div>
-                  <div class="form-group">
-                    <label for="api_url">API URL</label>
-                    <input type="text" class="form-control" id="api_url" name="api_url" placeholder="URL da API" value="${res.results["url"]}">
-                  </div>
-                  <div class="form-group">
-                    <label for="api_key">API Key</label>
-                    <input type="text" class="form-control" id="api_key" name="api_key" placeholder="API Key" value="${res.results["api_key"]}">
-                  </div>
-                  <div class="form-group">
-                    <label for="api_load_symbols">Símbolos da API</label>
-                    <input type="text" class="form-control" id="api_load_symbols" name="api_load_symbols" placeholder="Símbolos da API" value="${res.results["load_symbols"]}">
-                  </div>
-                  <div class="form-group">
-                    <label for="api_status">Status</label>
-                    <select class="form-control" id="api_status" name="api_status">
-                      <option value="1" ${(res.results["active"] === 1) ? 'selected' : ''}>Ativo</option>
-                      <option value="0" ${(res.results["active"] === 0) ? 'selected' : ''}>Inativo</option>
-                    </select>
-                  </div>
-                </form>
-              `)
-              
-              $("#modal-admin").modal("show")
-            } else {
-              showAlert(`A Api ${data["name"]} não encontrada.`, 'warning')
-            }
-          })
-          .catch(e => {
-            showAlert(`A Api ${data["name"]} não encontrada para ser excluída.`, 'danger')
-          })
-      })
-
-      $('#modal-admin button[data-action="save-record"]').on('click', (e) => {
-        e.stopPropagation()
-        e.preventDefault()
-        console.log( objectifyForm($("#modal-admin .formEditApi").serializeArray()) )
-      })
-
-      $('button[data-action="close-modal"]').click((e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        $("#modal-admin").modal("hide")
-      })
-
-      $('button[data-action="delete-record"]').click((e) => {
-        const data = e.target.dataset
-        if (confirm(`Deseja realmente excluir a API ${data["name"]}?`)) {
-          fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'DELETE', headers: {"accept": "application/json", "Content-type": "application/json"}})
-            .then(res => res.json())
-            .then(res => {
-              if (res && res.status && res.id && res.status === 'OK' && res.id > 0) {
-                showAlert(`A API ${data["name"]} (${res.id}) foi excluída.`, 'success')
-                loadListAPIs()
-              } else {
-                showAlert(`A Api ${data["name"]} não encontrada para ser excluída.`, 'warning')
-                loadListAPIs()
-              }
-            })
-            .catch(e => {
-              showAlert(`Houve um problema ao tentar excluir a API. Erro: ${e.message}`, 'danger')
-              loadListAPIs()
-            })
-        }
-      })
+      listAPIsActions()
     }          
   })
   .catch(e => {

@@ -587,17 +587,20 @@ def update_api(id):
             if actual_record:
                 cursor.execute("UPDATE apis SET name = %s, symbol = %s, url = %s, api_key = %s, load_symbols = %s, active = %s WHERE id = %s LIMIT 1", (name, symbol, url, api_key, load_symbols, active, id))
                 conn.commit()
-                cursor.execute("SELECT id, name, symbol, url, api_key, active, created_at FROM apis WHERE id = %s LIMIT 1", (id,))
+                cursor.execute("SELECT id, name, symbol, url, api_key, load_symbols, active, created_at FROM apis WHERE id = %s LIMIT 1", (id,))
                 new_record = cursor.fetchone()
-                status_message = "UPDATED"
+                status_message = "OK"
             else:
                 new_record = []
 
             cursor.close()
             conn.close()
-            return jsonify({"status": status_message, "message": None, "id": id, "new-record": {"id": new_record[0], "name": new_record[1], "symbol": new_record[2], "url": new_record[3], "api_key": new_record[4], "load_symbols": new_record[5], "active": new_record[6], "created_at": new_record[7]}}), 200
-        else:
 
+            if len(new_record) > 0:
+                return jsonify({"status": status_message, "message": None, "id": id, "new-record": {"id": new_record[0], "name": new_record[1], "symbol": new_record[2], "url": new_record[3], "api_key": new_record[4], "load_symbols": new_record[5], "active": new_record[6], "created_at": new_record[7]}}), 200
+            else:
+                return jsonify({"status": status_message, "message": None, "id": id, "new-record": {}}), 404
+        else:
             cursor.close()
             conn.close()
             return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
