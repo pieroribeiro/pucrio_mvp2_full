@@ -134,55 +134,35 @@ function loadListAPIs () {
               $("#modal-admin .modal-body").append(`
                 <form class="formEditApi">
                   <input type="hidden" name="id" value="${res.results["id"]}">
-                  <ul>
-                    <li>
-                      Nome:<br>
-                      <input type="text" name="name" value="${res.results["name"]}">
-                    </li>
-                    <li>
-                      Símbolo:<br>
-                      <input type="text" name="symbol" value="${res.results["symbol"]}">
-                    </li>
-                    <li>
-                      URL:<br>
-                      <input type="text" name="url" value="${res.results["url"]}">
-                    </li>
-                    <li>
-                      API Key:<br>
-                      <input type="text" name="api_key" value="${res.results["api_key"]}">
-                    </li>
-                    <li>
-                      Símbolos para carregar:<br>
-                      <input type="text" name="load_symbols" value="${res.results["load_symbols"]}">
-                    </li>
-                    <li>
-                      Status:<br>
-                      <select name="status">
-                        <option value="1" ${(res.results["active"] === 1) ? 'selected' : ''}></option>
-                        <option value="0" ${(res.results["active"] === 0) ? 'selected' : ''}></option>
-                      </select>
-                    </li>
-                    <li>
-                      <button class="btn btn-primary btnSaveApi">Salvar</button>
-                      <button class="btn btn-secondary btnCancelApi">Cancelar</button>
-                    </li>
-                  </ul>
+                  <div class="form-group">
+                    <label for="api_name">Nome da API</label>
+                    <input type="text" class="form-control" id="api_name" name="api_name" placeholder="Nome da API" value="${res.results["name"]}">
+                  </div>
+                  <div class="form-group">
+                    <label for="api_symbol">Símbolo</label>
+                    <input type="text" class="form-control" id="api_symbol" name="api_symbol" placeholder="Nome da API" value="${res.results["symbol"]}">
+                  </div>
+                  <div class="form-group">
+                    <label for="api_url">API URL</label>
+                    <input type="text" class="form-control" id="api_url" name="api_url" placeholder="URL da API" value="${res.results["url"]}">
+                  </div>
+                  <div class="form-group">
+                    <label for="api_key">API Key</label>
+                    <input type="text" class="form-control" id="api_key" name="api_key" placeholder="API Key" value="${res.results["api_key"]}">
+                  </div>
+                  <div class="form-group">
+                    <label for="api_load_symbols">Símbolos da API</label>
+                    <input type="text" class="form-control" id="api_load_symbols" name="api_load_symbols" placeholder="Símbolos da API" value="${res.results["load_symbols"]}">
+                  </div>
+                  <div class="form-group">
+                    <label for="api_status">Status</label>
+                    <select class="form-control" id="api_status" name="api_status">
+                      <option value="1" ${(res.results["active"] === 1) ? 'selected' : ''}>Ativo</option>
+                      <option value="0" ${(res.results["active"] === 0) ? 'selected' : ''}>Inativo</option>
+                    </select>
+                  </div>
                 </form>
               `)
-
-              $('#modal-admin .modal-body .btnCancelApi').on('click', (e) => {
-                e.stopPropagation()
-                e.preventDefault()
-
-                $('#modal-admin button[data-action="close-modal"]').click()
-              })
-
-              $('#modal-admin .modal-body .btnSaveApi').on('click', (e) => {
-                e.stopPropagation()
-                e.preventDefault()
-                console.log( $("#modal-admin .formEditApi").serialize() )
-              })
-
               
               $("#modal-admin").modal("show")
             } else {
@@ -192,6 +172,12 @@ function loadListAPIs () {
           .catch(e => {
             showAlert(`A Api ${data["name"]} não encontrada para ser excluída.`, 'danger')
           })
+      })
+
+      $('#modal-admin button[data-action="save-record"]').on('click', (e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        console.log( objectifyForm($("#modal-admin .formEditApi").serializeArray()) )
       })
 
       $('button[data-action="close-modal"]').click((e) => {
