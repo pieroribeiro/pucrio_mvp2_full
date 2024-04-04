@@ -1,11 +1,14 @@
 import os
 import mysql.connector
 from flask import Flask, jsonify, request
-from typing import List
+from flask_cors import CORS
+from flasgger import Swagger, swag_from
 from datetime import datetime
 
 APP_PORT = os.getenv("APP_PORT", "8080")
 app = Flask(__name__)
+CORS(app)
+swagger = Swagger(app)
 
 # Configurações do banco de dados
 DB_HOST = os.getenv("DB_HOST", "mysql-example")
@@ -34,12 +37,103 @@ def convertDatetime(dt, isISO = True, format = '%Y-%m-%d %H:%M:%S'):
 # Endpoint HEALTH: Retorna se o serviço está opk
 @app.route('/health', methods=['GET'])
 def get_health():
+    """
+    Endpoint para verificação do status do serviço
+    ---
+    tags:
+      - Default
+    responses:
+        200:
+            description: OK
+            schema:
+                id: Health
+                properties:
+                    status:
+                        type: string
+                        description: O status do serviço
+    """
     return jsonify({"status": "OK"}), 200
 
 
-# Endpoint GET: Retorna todos os itens
+# Endpoint GET: Retorna todos as cotações
 @app.route('/cotacoes', methods=['GET'])
-def get_items():
+def get_cotacoes():
+    """
+    Endpoint que retorna todas as cotações
+    ---
+    tags:
+      - Cotacoes
+    definitions:
+        Cotacao:
+            type: object
+            properties:
+                id: 
+                    type: integer
+                symbol: 
+                    type: string
+                name: 
+                    type: string
+                value: 
+                    type: number
+                type:
+                    type: string
+                created_at:
+                    type: string
+        
+        CotacaoNew:
+            type: object
+            properties:
+                symbol: 
+                    type: string
+                name: 
+                    type: string
+                value: 
+                    type: number
+                type:
+                    type: string
+
+        CotacaoReturnUnique:
+            type: object
+            properties:
+                results: 
+                    type: object
+                status:
+                    type: string
+                message:
+                    type: string
+
+        Cotacoes:
+            type: object
+            properties:
+                results: 
+                    type: array
+                    items:
+                        $ref: '#/definitions/Cotacao'
+                status:
+                    type: string
+                message:
+                    type: string
+
+        CotacoesError:
+            type: object
+            properties:
+                results: 
+                    type: string
+                status:
+                    type: string
+                message:
+                    type: string
+
+    responses:
+        200:
+            description: OK
+            schema:
+                $ref: '#/definitions/Cotacoes'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/CotacoesError'
+    """
     try: 
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -62,19 +156,42 @@ def get_items():
             cursor.close()
             conn.close()
 
-            return jsonify({'results': results}), 200
+            return jsonify({"results": results, "status": "OK", "message": None}), 200
         else:
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+            return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Error get_items: {str(e)}"}), 500
+        return jsonify({"results": None, "status": "ERROR", "message": f"Error get_items: {str(e)}"}), 500
 
 
 # Endpoint GET: Retorna items filtrados pelo símbolo
 @app.route('/cotacoes/<string:symbol>', methods=['GET'])
-def get_items_by_symbol(symbol):
+def get_cotacoes_by_symbol(symbol):
+    """
+    Endpoint que retorna todas as cotações
+    ---
+    tags:
+      - Cotacoes
+    parameters:
+      - name: symbol
+        in: path
+        type: string
+        enum: ["BTC","ETH","ARS","USD","EUR","CAD","GBP"]
+        required: true
+        default: USD
+
+    responses:
+        200:
+            description: OK
+            schema:
+                $ref: '#/definitions/Cotacoes'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/CotacoesError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -97,19 +214,41 @@ def get_items_by_symbol(symbol):
             cursor.close()
             conn.close()
 
-            return jsonify({'results': results}), 200
+            return jsonify({'results': results, "status": "OK", "message": None}), 200
         else:
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+            return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Error get_item: {str(e)}"}), 500
+        return jsonify({"results": None, "status": "ERROR", "message": f"Error get_item: {str(e)}"}), 500
     
 
 # Endpoint GET: Retorna item específico pelo ID
 @app.route('/cotacoes/<int:id>', methods=['GET'])
-def get_item_by_id(id):
+def get_cotacoes_by_id(id):
+    """
+    Endpoint que retorna a cotação pelo ID
+    ---
+    tags:
+      - Cotacoes
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+        default: 1
+
+    responses:
+        200:
+            description: OK
+            schema:
+                $ref: '#/definitions/CotacaoReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/CotacoesError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -133,19 +272,42 @@ def get_item_by_id(id):
             cursor.close()
             conn.close()
 
-            return jsonify({'result': result}), 200
+            return jsonify({"results": result, "status": "ERROR", "message": None}), 200
         else:
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+            return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Error get_item: {str(e)}"}), 500
+        return jsonify({"results": None, "status": "ERROR", "message": f"Error get_item: {str(e)}"}), 500
     
 
 # Endpoint POST: Cria um novo item
 @app.route('/cotacoes', methods=['POST'])
-def create_item():
+def create_cotacao():
+    """
+    Endpoint que cria uma cotação
+    ---
+    tags:
+      - Cotacoes
+    parameters:
+      - name: body
+        in: body
+        type: integer
+        required: true
+        schema:
+            $ref: '#/definitions/CotacaoNew'
+
+    responses:
+        201:
+            description: OK
+            schema:
+                $ref: '#/definitions/CotacaoReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/CotacoesError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -167,19 +329,19 @@ def create_item():
             cursor.close()
             conn.close()
 
-            return jsonify({'status': 'CREATED', 'id': recordId}), 201
+            return jsonify({"results": {"id": recordId}, "status": "CREATED", "message": None}), 201
         else:
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500            
+            return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500            
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Error create_item: {str(e)}"}), 500
+        return jsonify({"results": None, "status": "ERROR", "message": f"Error create_item: {str(e)}"}), 500
 
 
 # Endpoint PUT: Atualiza um item existente
 @app.route('/cotacoes/<int:id>', methods=['PUT'])
-def update_item(id):
+def update_cotacao(id):
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -200,23 +362,44 @@ def update_item(id):
                 new_record = cursor.fetchone()
                 status_message = "UPDATED"
             else:
-                new_record = []
+                new_record = {}
 
             cursor.close()
             conn.close()
-            return jsonify({"status": status_message, "id": id, "new-record": {"id": new_record[0], "symbol": new_record[1], "name": new_record[2], "value": new_record[3], "type": new_record[4], "created_at": new_record[5]}}), 200
+            return jsonify({"results": new_record, "status": status_message, "message": None}), 201
         else:
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
+            return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Error update_item: {str(e)}"}), 500
+        return jsonify({"results": None, "status": "ERROR", "message": f"Error update_item: {str(e)}"}), 500
 
 
 # Endpoint DELETE: Deleta um item existente
 @app.route('/cotacoes/<int:id>', methods=['DELETE'])
-def delete_item(id):
+def delete_cotacao(id):
+    """
+    Endpoint que exclui uma cotação
+    ---
+    tags:
+      - Cotacoes
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+
+    responses:
+        201:
+            description: OK
+            schema:
+                $ref: '#/definitions/CotacaoReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/CotacoesError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -230,14 +413,14 @@ def delete_item(id):
 
             cursor.close()
             conn.close()
-            return jsonify({"status": status_message, "id": id}), 200
+            return jsonify({"results": {"id": id}, "status": status_message, "message": None}), 204
         else:
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+            return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Error delete_item: {str(e)}"}), 500
+        return jsonify({"results": None, "status": "ERROR", "message": f"Error delete_item: {str(e)}"}), 500
 
 
 
@@ -249,6 +432,7 @@ def delete_item(id):
 
 # Endpoint GET: Retorna todas as notícias
 @app.route('/news', methods=['GET'])
+@swag_from('swagger_docs/get_news.yml')
 def get_news():
     try: 
         conn, cursor = connect_to_database()
@@ -284,6 +468,7 @@ def get_news():
 
 # Endpoint GET: Retorna uma notícia específica pelo ID
 @app.route('/news/<int:id>', methods=['GET'])
+@swag_from('swagger_docs/get_news_by_id.yml')
 def get_news_by_id(id):
     try:
         conn, cursor = connect_to_database()
@@ -320,6 +505,7 @@ def get_news_by_id(id):
 
 # Endpoint POST: Cria uma nova notícia
 @app.route('/news', methods=['POST'])
+@swag_from('swagger_docs/create_news.yml')
 def create_news():
     try:
         conn, cursor = connect_to_database()
@@ -358,6 +544,7 @@ def create_news():
 
 # Endpoint PUT: Atualiza uma notícia existente
 @app.route('/news/<int:id>', methods=['PUT'])
+@swag_from('swagger_docs/update_news.yml')
 def update_news(id):
     try:
         conn, cursor = connect_to_database()
@@ -398,6 +585,7 @@ def update_news(id):
 
 # Endpoint DELETE: Deleta um item existente
 @app.route('/news/<int:id>', methods=['DELETE'])
+@swag_from('swagger_docs/delete_news.yml')
 def delete_news(id):
     try:
         conn, cursor = connect_to_database()
@@ -431,6 +619,7 @@ def delete_news(id):
 
 # Endpoint GET: Retorna todas as apis ativas cadastradas
 @app.route('/api', methods=['GET'])
+@swag_from('swagger_docs/get_apis.yml')
 def get_apis():
     try: 
         conn, cursor = connect_to_database()
@@ -465,6 +654,7 @@ def get_apis():
 
 # Endpoint GET: Retorna uma api específica pelo SYMBOL
 @app.route('/api/<string:symbol>', methods=['GET'])
+@swag_from('swagger_docs/get_api_by_symbol.yml')
 def get_api_by_symbol(symbol):
     try:
         conn, cursor = connect_to_database()
@@ -500,6 +690,7 @@ def get_api_by_symbol(symbol):
 
 # Endpoint GET: Retorna uma api específica pelo ID
 @app.route('/api/<int:id>', methods=['GET'])
+@swag_from('swagger_docs/get_api_by_id.yml')
 def get_api_by_id(id):
     try:
         conn, cursor = connect_to_database()
@@ -535,6 +726,7 @@ def get_api_by_id(id):
 
 # Endpoint POST: Cria uma nova api
 @app.route('/api', methods=['POST'])
+@swag_from('swagger_docs/create_api.yml')
 def create_api():
     try:
         conn, cursor = connect_to_database()
@@ -568,6 +760,7 @@ def create_api():
 
 # Endpoint PUT: Atualiza uma api existente
 @app.route('/api/<int:id>', methods=['PUT'])
+@swag_from('swagger_docs/update_api.yml')
 def update_api(id):
     try:
         conn, cursor = connect_to_database()
@@ -610,6 +803,7 @@ def update_api(id):
 
 # Endpoint DELETE: Deleta uma api existente
 @app.route('/api/<int:id>', methods=['DELETE'])
+@swag_from('swagger_docs/delete_api.yml')
 def delete_api(id):
     try:
         conn, cursor = connect_to_database()

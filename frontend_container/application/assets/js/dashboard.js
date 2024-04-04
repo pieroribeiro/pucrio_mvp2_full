@@ -105,7 +105,7 @@ function loadNewsValues () {
 }
 
 function listAPIsActions () {
-  $('button[data-action="edit-record"]').click((e) => {
+  $(document).on('click', 'button[data-action="edit-record"]', (e) => {
     e.stopPropagation();
     e.preventDefault();
     const data = e.target.dataset
@@ -159,7 +159,7 @@ function listAPIsActions () {
       })
   })
 
-  $('button[data-action="delete-record"]').click((e) => {
+  $(document).on('click', 'button[data-action="delete-record"]', (e) => {
     const data = e.target.dataset
     if (confirm(`Deseja realmente excluir a API ${data["name"]}?`)) {
       fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'DELETE', headers: {"accept": "application/json", "Content-type": "application/json"}})
@@ -180,13 +180,13 @@ function listAPIsActions () {
     }
   })
 
-  $('button[data-action="close-modal"]').click((e) => {
+  $(document).on('click', 'button[data-action="close-modal"]', (e) => {
     e.stopPropagation();
     e.preventDefault();
     $("#modal-admin").modal("hide")
   })
 
-  $('#modal-admin button[data-action="save-record"]').on('click', (e) => {
+  $(document).on('click', '#modal-admin button[data-action="save-record"]', (e) => {
     e.stopPropagation()
     e.preventDefault()
     
@@ -251,8 +251,6 @@ function loadListAPIs () {
         </li>
         `)
       })
-
-      listAPIsActions()
     }          
   })
   .catch(e => {
@@ -278,6 +276,7 @@ function loadListAPIs () {
       loadCoinValues (`${api_host}:${api_host_port}/api/finance/USD`, formatCurrency, formatPercent)
       loadCoinValues (`${api_host}:${api_host_port}/api/finance/EUR`, formatCurrency, formatPercent)
       loadCoinValues (`${api_host}:${api_host_port}/api/finance/CAD`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/api/finance/GBP`, formatCurrency, formatPercent)
     }
     
     if ($("#card-news").length) {
@@ -286,6 +285,8 @@ function loadListAPIs () {
     
     if ($("#card-apis").length) {
       loadListAPIs()
+
+      listAPIsActions()
     }
   });
 })(jQuery);
