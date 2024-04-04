@@ -1,113 +1,112 @@
-# PUCRIO - MVP Fullstack - BACKEND
-Repositório referente ao MVP da disciplina Desenvolvimento Fullstack Básico - Backend
+# PUCRIO - MVP2 - BACKEND ADVANCED
+Repositório referente ao MVP da disciplina Desenvolvimento Fullstack Avançado
 
-## Swagger (API Documentation):
-http://127.0.0.1:5000/openapi/swagger
+## Sobre o projeto
+Este MVP foi concebido para demonstrar a arquitetura de comunicação entre micro-serviços isolados.
+O objetivo deste modelo é capturar dados de fontes externas e exibí-los de forma agradável e condizente ao mercado financeiro.
+Segue abaixo o desenho esquemático da arquitetura:
 
-## 🌐 Finalidade
+![Image](/git-assets/img/arquitetura.png)
 
-Este MVP tem a finalidade de um sistema para cadastro de produtos, com as seguintes ações:
-  - Listar produtos cadastrados (GET - ALL)
-  - Cadastrar Produto (POST)
-  - Atualizar produto cadastrado (GET by ID e PUT)
-  - Excluir produto cadastrado
 
-## Database concepts:
+# COMPONENTES DA ARQUITETURA:
 
-```
-Table Products {
-  id integer [pk, unique, not null, increment]
-  name varchar
-  value float
-  created_at timestamp [default: `now()`]
-}
-``` 
+# 🚀- Database Container ![Badge](https://img.shields.io/static/v1?label=MySQL&message=v8.0&color=orange)
+Container onde está instalado o Banco de Dados MySQL.
+Usuário root, Usuário e Senha da aplicação definidos no arquivo Dockerfile
 
-## 🔨 BACKLOG
+# 🚀- Interceptor Container ![Badge](https://img.shields.io/static/v1?label=Python&message=v3.8&color=orange)
+Documentação das APIs: [SWAGGER](http://localhost:3001/apidocs/)
 
-### 📦 Criação de rotas
+# 🚀- Loader Container ![Badge](https://img.shields.io/static/v1?label=NodeJS&message=v18.0&color=orange) 
+Este container é o responsável pelo carregamento de todos os dados de APIs externas, modelando os dados de acordo com os contratos previamente estabelecidos.
+Este serviço é executado através de CronJobs, com tempos estipulados diretamente de variáveis de ambiente, no arquivo Dockerfile
 
-🗃️ Adicionar rota para listagem de vendas
+# 🚀- External APIs
+APIs externas conectadas ao projeto:
+[NewsAPIs.org](https://newsapi.org/v2/top-headlines) - Carregamento de Notícias
+[AwesomeAPIs](https://economia.awesomeapi.com.br/json/last) - Carregamento de Dados de Moedas e Criptos-Moedas
 
-🗃️ Adicionar rota para listagem de venda pelo ID da venda
+# 🚀- API Container ![Badge](https://img.shields.io/static/v1?label=NodeJS&message=v18.0&color=orange) 
 
-🗃️ Adicionar rota para adicionar novas vendas
+API que servirá dados para o nosso frontend, contendo os seguintes endpoints:
+URL: http://localhost:3002
 
-🗃️ Adicionar rota para excluir novas vendas (acesso administrativo, ainda no Backlog)
-
-🗃️ Adicionar rota para listar produtos de uma venda
-
-🗃️ Adiocnar rota para adicionar produtos em uma venda
-
-🗃️ Adiocnar rota para excluir produtos em uma venda
-
-### 📦 Criação de Sistema de login:
-
-- Adicionar rota para login
-- Adicionar rota para recuperação de senha
-- Adicionar rota para cadastro (acesso admin)
-
-### 🛢️ Estrutura de dados a ser composta (adicionada) no Backlog
+🚧 ENDPOINTS:
 
 ```
-Table Products {
-  id integer [pk, unique, not null, increment]
-  name varchar
-  value float
-  created_at timestamp [default: `now()`]
-}
+Descrição: Endpoint para verificação de status do serviço.
+Método HTTP: GET
+Exemplo de Requisição:
+🌐 GET /health
+```
 
-Table Sales {
-  id integer [pk, unique, not null, increment]
-  created_at timestamp [default: `now()`]
-}
+```
+Descrição: Endpoint para retornar dados de cotações das moedas e cripto-moedas
+Método HTTP: GET
+Exemplo de Requisição:
+🌐 GET /finance/:coin
+```
 
-Table Sales_Products {
-  id integer [pk, unique, not null, increment]
-  sale_id integer [unique, not null]
-  product_id integer
-}
+```
+Descrição: Endpoint para retornar dados de notícias
+Método HTTP: GET
+Exemplo de Requisição:
+🌐 GET /news
+```
 
-Ref: Products.id - Sales_Products.product_id [delete: cascade, update: cascade]
-Ref: Sales.id - Sales_Products.sale_id [delete: cascade, update: cascade]
+```
+Descrição: Endpoint para retornar as apis cadastradas
+Método HTTP: GET
+Exemplo de Requisição:
+🌐 GET /api
+```
+
+```
+Descrição: Endpoint para retornar uma api cadastrada pelo ID
+Método HTTP: GET
+Exemplo de Requisição:
+🌐 GET /api/:id
+```
+
+```
+Descrição: Endpoint para atualizar uma api cadastrada
+Método HTTP: GET
+Exemplo de Requisição:
+🌐 PUT /api/:id
+```
+
+```
+Descrição: Endpoint para excluir uma api cadastrada
+Método HTTP: DELETE
+Exemplo de Requisição:
+🌐 DELETE /api/:id
 ```
 
 
-## Sistema de Produtos aplicável à qualquer área que demande produtos e vendas:
 
-> Este MVP tem a aplicação para comerciantes de feira.
+# 🚀- Frontend ![Badge](https://img.shields.io/static/v1?label=Bootstrap&message=v3.0&color=orange) ![Badge](https://img.shields.io/static/v1?label=jQuery&message=v3.7.1&color=orange)
+Exibição de 3 páginas:
+- Gráficos de Cotações de Moedas e Cripto-moedas
+- Listagem de Notícias
+- Administração de APIs
+
   
-## ⚙️ Instalação e Execução (LINUX):  
+## ⚙️ Instalação e Execução (LINUX / WINDOWS + WSL):  
 
-> 💢 Este projeto foi construído sobre o Python na versão 3.10.12.
-> 
-> 💢 Necessário a instalação de todas as bibliotecas contidas em `requirements.txt`.
-> 
-> 💢 É fortemente indicado o uso de ambientes virtuais do tipo [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html).
-> Executar os comandos descritos aqui para instalar a aplicação:
+Premissas para execução do Projeto:
+> 💢 Ter instalado o WSL no Windows ou mesmo poderá executar no Linux
+> 💢 Ter instalado o Docker no WSL ou no Linux
 
-```
-(env)$ git clone git@github.com:pieroribeiro/pucrio_mvp1_backend.git do repositório
-(env)$ cd pucrio_mvp1_backend/
-(env)$ pip install -r requirements.txt
-(env)$ ./run.sh
+Executar os comandos descritos aqui para instalar a aplicação:
 
 ```
-  
-> Executar os comandos descritos aqui para executar a aplicação:
-> 
-> Abra o [http://localhost:5000/#/](http://localhost:5000/#/) no navegador para verificar o status da API em execução.
+$ git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
+$ cd pucrio_mvp2_full/
+$ docker-compose up -d
+```
 
-
-## 🕸️ Endpoints
-| ROUTE | MÉTHOD  | REQUEST | RESPONSE CODE | RESPONSE |
-|--|--|--|--|--|
-| /product/<int:id> | GET | null | 201 | id: int <br> name: string <br> value: float <br>  created_at: str <br> updated_at: str
-| /products/ | GET | null | 201 | List[ {id: int <br> name: string <br> value: float <br>  created_at: str <br> updated_at: str} ]
-| /product/ | POST | name: string <br> value: float | 201 | id: int <br> name: string <br> value: float <br>  created_at: str <br> updated_at: str
-| /products/<int:id> | PUT | name: string <br> value: float | 201 | message: string
-| /product/<int:id> | DELETE | null | 201 | message: string
-
-
-
-
+Para cancelar a execução dos containers Docker, executar o seguinte comando:
+```
+$ docker-compose down -v
+```
