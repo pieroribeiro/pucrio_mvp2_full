@@ -33,6 +33,9 @@ def convertDatetime(dt, isISO = True, format = '%Y-%m-%d %H:%M:%S'):
     else:
         return datetime.strptime(str(dt), format)        
 
+@app.errorhandler(404)
+def endpoint_not_found(error):
+    return jsonify({"message": "Endpoint not found"}), 404
 
 # Endpoint HEALTH: Retorna se o serviço está opk
 @app.route('/health', methods=['GET'])
@@ -41,7 +44,7 @@ def get_health():
     Endpoint para verificação do status do serviço
     ---
     tags:
-      - Default
+      - Admin
     responses:
         200:
             description: OK
@@ -62,7 +65,7 @@ def get_cotacoes():
     Endpoint que retorna todas as cotações
     ---
     tags:
-      - Cotacoes
+      - Cotações
     definitions:
         Cotacao:
             type: object
@@ -173,7 +176,7 @@ def get_cotacoes_by_symbol(symbol):
     Endpoint que retorna todas as cotações
     ---
     tags:
-      - Cotacoes
+      - Cotações
     parameters:
       - name: symbol
         in: path
@@ -231,7 +234,7 @@ def get_cotacoes_by_id(id):
     Endpoint que retorna a cotação pelo ID
     ---
     tags:
-      - Cotacoes
+      - Cotações
     parameters:
       - name: id
         in: path
@@ -289,7 +292,7 @@ def create_cotacao():
     Endpoint que cria uma cotação
     ---
     tags:
-      - Cotacoes
+      - Cotações
     parameters:
       - name: body
         in: body
@@ -342,6 +345,33 @@ def create_cotacao():
 # Endpoint PUT: Atualiza um item existente
 @app.route('/cotacoes/<int:id>', methods=['PUT'])
 def update_cotacao(id):
+    """
+    Endpoint que atualiza uma cotação
+    ---
+    tags:
+      - Cotações
+    parameters:
+      - name: body
+        in: body
+        type: object
+        required: true
+        schema:
+            $ref: '#/definitions/CotacaoNew'
+      - name: id
+        in: path
+        type: integer
+        required: true
+
+    responses:
+        201:
+            description: OK
+            schema:
+                $ref: '#/definitions/CotacaoReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/CotacoesError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -383,7 +413,7 @@ def delete_cotacao(id):
     Endpoint que exclui uma cotação
     ---
     tags:
-      - Cotacoes
+      - Cotações
     parameters:
       - name: id
         in: path
@@ -432,8 +462,84 @@ def delete_cotacao(id):
 
 # Endpoint GET: Retorna todas as notícias
 @app.route('/news', methods=['GET'])
-@swag_from('swagger_docs/get_news.yml')
 def get_news():
+    
+    """
+    Endpoint que retorna todas as cotações
+    ---
+    tags:
+      - Notícias
+    definitions:
+        Noticia:
+            type: object
+            properties:
+                id: 
+                    type: integer
+                title: 
+                    type: string
+                media: 
+                    type: string
+                url: 
+                    type: string
+                published_at:
+                    type: string
+                created_at:
+                    type: string
+        
+        NoticiaNew:
+            type: object
+            properties:
+                title: 
+                    type: string
+                media: 
+                    type: string
+                url: 
+                    type: string
+                published_at:
+                    type: string
+
+        NoticiaReturnUnique:
+            type: object
+            properties:
+                results: 
+                    type: object
+                status:
+                    type: string
+                message:
+                    type: string
+
+        Noticias:
+            type: object
+            properties:
+                results: 
+                    type: array
+                    items:
+                        $ref: '#/definitions/Noticia'
+                status:
+                    type: string
+                message:
+                    type: string
+
+        NoticiasError:
+            type: object
+            properties:
+                results: 
+                    type: string
+                status:
+                    type: string
+                message:
+                    type: string
+
+    responses:
+        200:
+            description: OK
+            schema:
+                $ref: '#/definitions/Noticias'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/NoticiasError'
+    """
     try: 
         conn, cursor = connect_to_database()
         if conn.is_connected():            
@@ -468,8 +574,29 @@ def get_news():
 
 # Endpoint GET: Retorna uma notícia específica pelo ID
 @app.route('/news/<int:id>', methods=['GET'])
-@swag_from('swagger_docs/get_news_by_id.yml')
 def get_news_by_id(id):
+    """
+    Endpoint que retorna a notícia pelo ID
+    ---
+    tags:
+      - Notícias
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+        default: 1
+
+    responses:
+        200:
+            description: OK
+            schema:
+                $ref: '#/definitions/NoticiaReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/NoticiasError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -493,20 +620,42 @@ def get_news_by_id(id):
             cursor.close()
             conn.close()
 
-            return jsonify({'result': result}), 200
+            return jsonify({"results": result, "status": "OK", "message": None}), 200
         else:
 
             cursor.close()
             conn.close()
-            return jsonify({"status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+            return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Error get_news_by_id: {str(e)}"}), 500
+        return jsonify({"results": None, "status": "ERROR", "message": f"Error get_news_by_id: {str(e)}"}), 500
 
 
 # Endpoint POST: Cria uma nova notícia
 @app.route('/news', methods=['POST'])
-@swag_from('swagger_docs/create_news.yml')
 def create_news():
+    """
+    Endpoint que cria uma notícia
+    ---
+    tags:
+      - Notícias
+    parameters:
+      - name: body
+        in: body
+        type: integer
+        required: true
+        schema:
+            $ref: '#/definitions/NoticiaNew'
+
+    responses:
+        201:
+            description: OK
+            schema:
+                $ref: '#/definitions/NoticiaReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/NoticiasError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -544,8 +693,34 @@ def create_news():
 
 # Endpoint PUT: Atualiza uma notícia existente
 @app.route('/news/<int:id>', methods=['PUT'])
-@swag_from('swagger_docs/update_news.yml')
 def update_news(id):
+    """
+    Endpoint que atualiza uma notícia
+    ---
+    tags:
+      - Notícias
+    parameters:
+      - name: body
+        in: body
+        type: object
+        required: true
+        schema:
+            $ref: '#/definitions/NoticiaNew'
+      - name: id
+        in: path
+        type: integer
+        required: true
+
+    responses:
+        201:
+            description: OK
+            schema:
+                $ref: '#/definitions/NoticiaReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/NoticiasError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -585,8 +760,28 @@ def update_news(id):
 
 # Endpoint DELETE: Deleta um item existente
 @app.route('/news/<int:id>', methods=['DELETE'])
-@swag_from('swagger_docs/delete_news.yml')
 def delete_news(id):
+    """
+    Endpoint que exclui uma notícia
+    ---
+    tags:
+      - Notícias
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+
+    responses:
+        201:
+            description: OK
+            schema:
+                $ref: '#/definitions/NoticiaReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/NoticiasError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -619,8 +814,96 @@ def delete_news(id):
 
 # Endpoint GET: Retorna todas as apis ativas cadastradas
 @app.route('/api', methods=['GET'])
-@swag_from('swagger_docs/get_apis.yml')
 def get_apis():
+    
+    """
+    Endpoint que retorna todas as APIs
+    ---
+    tags:
+      - APIs
+    definitions:
+        API:
+            type: object
+            properties:
+                id: 
+                    type: integer
+                name: 
+                    type: string
+                symbol: 
+                    type: string
+                symbol: 
+                    type: string
+                url: 
+                    type: string
+                api_key: 
+                    type: string
+                load_symbols: 
+                    type: string
+                active: 
+                    type: integer
+                created_at:
+                    type: string
+        
+        APINew:
+            type: object
+            properties:
+                name: 
+                    type: string
+                symbol: 
+                    type: string
+                symbol: 
+                    type: string
+                url: 
+                    type: string
+                api_key: 
+                    type: string
+                load_symbols: 
+                    type: string
+                active: 
+                    type: integer
+
+        APIReturnUnique:
+            type: object
+            properties:
+                results: 
+                    type: object
+                status:
+                    type: string
+                message:
+                    type: string
+
+        APIS:
+            type: object
+            properties:
+                results: 
+                    type: array
+                    items:
+                        $ref: '#/definitions/Noticia'
+                status:
+                    type: string
+                message:
+                    type: string
+
+        APISError:
+            type: object
+            properties:
+                results: 
+                    type: string
+                status:
+                    type: string
+                message:
+                    type: string
+
+    responses:
+        200:
+            description: OK
+            schema:
+                $ref: '#/definitions/APIS'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/APISError'
+    """
     try: 
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -654,8 +937,30 @@ def get_apis():
 
 # Endpoint GET: Retorna uma api específica pelo SYMBOL
 @app.route('/api/<string:symbol>', methods=['GET'])
-@swag_from('swagger_docs/get_api_by_symbol.yml')
 def get_api_by_symbol(symbol):
+    """
+    Endpoint que retorna as APIs pelo símbolo
+    ---
+    tags:
+      - APIs
+    parameters:
+      - name: symbol
+        in: path
+        type: string
+        enum: ["coin","crypto"]
+        required: true
+        default: crypto
+
+    responses:
+        200:
+            description: OK
+            schema:
+                $ref: '#/definitions/APIS'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/APISError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -690,8 +995,29 @@ def get_api_by_symbol(symbol):
 
 # Endpoint GET: Retorna uma api específica pelo ID
 @app.route('/api/<int:id>', methods=['GET'])
-@swag_from('swagger_docs/get_api_by_id.yml')
 def get_api_by_id(id):
+    """
+    Endpoint que retorna a API pelo ID
+    ---
+    tags:
+      - APIs
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+        default: 1
+
+    responses:
+        200:
+            description: OK
+            schema:
+                $ref: '#/definitions/APIReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/APISError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -726,8 +1052,30 @@ def get_api_by_id(id):
 
 # Endpoint POST: Cria uma nova api
 @app.route('/api', methods=['POST'])
-@swag_from('swagger_docs/create_api.yml')
 def create_api():
+    """
+    Endpoint que cria uma API
+    ---
+    tags:
+      - APIs
+    parameters:
+      - name: body
+        in: body
+        type: integer
+        required: true
+        schema:
+            $ref: '#/definitions/APINew'
+
+    responses:
+        201:
+            description: OK
+            schema:
+                $ref: '#/definitions/APIReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/APISError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -760,8 +1108,34 @@ def create_api():
 
 # Endpoint PUT: Atualiza uma api existente
 @app.route('/api/<int:id>', methods=['PUT'])
-@swag_from('swagger_docs/update_api.yml')
 def update_api(id):
+    """
+    Endpoint que atualiza uma API
+    ---
+    tags:
+      - APIs
+    parameters:
+      - name: body
+        in: body
+        type: object
+        required: true
+        schema:
+            $ref: '#/definitions/APINew'
+      - name: id
+        in: path
+        type: integer
+        required: true
+
+    responses:
+        201:
+            description: OK
+            schema:
+                $ref: '#/definitions/APIReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/APISError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
@@ -803,8 +1177,28 @@ def update_api(id):
 
 # Endpoint DELETE: Deleta uma api existente
 @app.route('/api/<int:id>', methods=['DELETE'])
-@swag_from('swagger_docs/delete_api.yml')
 def delete_api(id):
+    """
+    Endpoint que exclui uma API
+    ---
+    tags:
+      - APIs
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+
+    responses:
+        201:
+            description: OK
+            schema:
+                $ref: '#/definitions/APIReturnUnique'
+        500:
+            description: Ocorreu um erro
+            schema:
+                $ref: '#/definitions/APISError'
+    """
     try:
         conn, cursor = connect_to_database()
         if conn.is_connected():
