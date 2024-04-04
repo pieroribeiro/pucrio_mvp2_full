@@ -96,6 +96,7 @@ Exibição de 3 páginas:
 
 Premissas para execução do Projeto:
 > 💢 Ter instalado o WSL no Windows ou mesmo poderá executar no Linux
+>
 > 💢 Ter instalado o Docker no WSL ou no Linux
 
 Executar os comandos descritos aqui para instalar a aplicação:

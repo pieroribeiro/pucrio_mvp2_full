@@ -83,7 +83,7 @@ function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
 }
 
 function loadNewsValues () {
-  fetch(`${api_host}:${api_host_port}/api/news`, {headers: {"accept": "application/json", "Content-type": "application/json"}})
+  fetch(`${api_host}:${api_host_port}/news`, {headers: {"accept": "application/json", "Content-type": "application/json"}})
     .then(res => res.json())
     .then(res => {
       if (res && res.results) {
@@ -270,13 +270,13 @@ function loadListAPIs () {
 
   $(function() {
     if ($("#graphics").length) {
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/BTC`, formatCurrency, formatPercent)
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/ETH`, formatCurrency, formatPercent)
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/ARS`, formatCurrency, formatPercent)
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/USD`, formatCurrency, formatPercent)
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/EUR`, formatCurrency, formatPercent)
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/CAD`, formatCurrency, formatPercent)
-      loadCoinValues (`${api_host}:${api_host_port}/api/finance/GBP`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/finance/BTC`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/finance/ETH`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/finance/ARS`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/finance/USD`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/finance/EUR`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/finance/CAD`, formatCurrency, formatPercent)
+      loadCoinValues (`${api_host}:${api_host_port}/finance/GBP`, formatCurrency, formatPercent)
     }
     
     if ($("#card-news").length) {
