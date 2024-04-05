@@ -116,13 +116,116 @@ Exibição de 3 páginas:
   
 ## ⚙️ Instalação e Execução (LINUX / WINDOWS + WSL):  
 
-Premissas para execução do Projeto:
+### Premissas para execução do Projeto:
 
 > 💥 Ter instalado o WSL no Windows ou mesmo poderá executar no Linux
 >
 > 💥 Ter instalado o Docker no WSL ou no Linux
 
-Executar os comandos descritos aqui para instalar a aplicação.
+#### Para instalar o Docker no Ubuntu (WSL) / Linux:
+    
+1. Primeiro, atualize sua lista existente de pacotes:
+   
+```
+$ sudo apt update
+```
+
+2. Instale alguns pacotes pré-requisito que deixam o apt usar pacotes pelo HTTPS:
+
+```
+$ sudo apt install apt-transport-https ca-certificates curl software-properties-common
+```
+
+3. Adicione a chave GPG para o repositório oficial do Docker no seu sistema:
+
+```
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+
+4. Adicione o repositório do Docker às fontes do APT:
+
+```
+$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+```
+
+5. Atualize o banco de dados do pacote com os pacotes do Docker do recém adicionado repositório:
+
+```
+$ sudo apt update
+```
+
+6. Certifique-se de que você está prestes a instalar do repositório do Docker ao invés do repositório padrão do Ubuntu:
+
+```
+$ apt-cache policy docker-ce
+```
+
+7. Você verá um resultado assim, embora o número da versão para o Docker possa ser diferente:
+
+```
+docker-ce:
+  Installed: (none)
+  Candidate: 5:19.03.9~3-0~ubuntu-focal
+  Version table:
+     5:19.03.9~3-0~ubuntu-focal 500
+        500 https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
+```
+
+8. Finalmente, instale o Docker:
+
+```
+$ sudo apt install docker-ce
+```
+
+9. Verifique se ele está funcionando:
+
+```
+$ sudo systemctl status docker
+```
+
+O resultado deve ser similar ao mostrado a seguir, mostrando que o serviço está ativo e funcionando:
+
+```
+Output
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+     Active: active (running) since Tue 2020-05-19 17:00:41 UTC; 17s ago
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 24321 (dockerd)
+      Tasks: 8
+     Memory: 46.4M
+     CGroup: /system.slice/docker.service
+             └─24321 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+```
+
+10. Se você quiser evitar digitar sudo sempre que você executar o comando docker, adicione seu nome de usuário no grupo docker:
+
+```
+$ sudo usermod -aG docker ${USER}
+```
+
+11. Para inscrever o novo membro ao grupo, saia do servidor e logue novamente, ou digite o seguinte:
+
+```
+$ su - ${USER}
+```
+
+Você será solicitado a digitar a senha do seu usuário para continuar.
+
+12. Confirme que seu usuário agora está adicionado ao grupo docker digitando:
+
+```
+$ id -nG
+```
+
+A saída do comando será algo parecido:
+
+```
+sammy sudo docker
+```
+
+### Executar os comandos descritos aqui para instalar a aplicação.
 
 ```
 $ git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
@@ -130,10 +233,10 @@ $ cd pucrio_mvp2_full/
 $ docker-compose up -d
 ```
 
-Para cancelar a execução dos containers Docker, executar o seguinte comando:
+### Para cancelar a execução dos containers Docker, executar o seguinte comando:
 
 ```
 $ docker-compose down -v
 ```
 
-> **PS**: Pelo fato de haver dependências entre os serviços e a criação de uma rede própria para estes, é altamente recomendável a execução através do docker compose e não separadamente.
+> **PS**: Pelo fato de haver dependências entre os serviços e a criação de uma rede própria para estes, é altamente recomendável a execução através do docker-compose.yml e não separadamente.
