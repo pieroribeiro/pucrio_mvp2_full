@@ -321,7 +321,7 @@ def create_cotacao():
             value = float(data['value'])
             type = data['type']
             
-            cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 2 DAY)")
+            cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
             conn.commit()
 
             cursor.execute("INSERT INTO cotacoes (symbol, name, value, type) VALUES (%s, %s, %s, %s)", (symbol, name, value, type))
@@ -530,6 +530,19 @@ def get_news():
                 message:
                     type: string
 
+        NoticiasErrorAlreadyExists:
+            type: object
+            properties:
+                results: 
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                status:
+                    type: string
+                message:
+                    type: string
+
     responses:
         200:
             description: OK
@@ -651,6 +664,10 @@ def create_news():
             description: OK
             schema:
                 $ref: '#/definitions/NoticiaReturnUnique'
+        409: 
+            description: Registro já existe
+            schema:
+                $ref: '#/definitions/NoticiasErrorAlreadyExists'            
         500:
             description: Ocorreu um erro
             schema:
@@ -670,18 +687,23 @@ def create_news():
             else:
                 published_at_obj = datetime.now()
             
-            cursor.execute("DELETE FROM news WHERE DATE(created_at) < (NOW() - INTERVAL 2 DAY)")
-            conn.commit()
+            cursor.execute("SELECT id FROM news WHERE url = %s LIMIT 1", (url,))
+            existsRecord = cursor.fetchone()
+            if existsRecord:
+                return jsonify({"results": {"id": existsRecord[0]}, "status": "ERROR", "message": "Record already exists"}), 409
+            else:
 
-            cursor.execute("INSERT INTO news (title, url, media, published_at) VALUES (%s, %s, %s, %s)", (title, url, media, published_at_obj))
-            conn.commit()
+                cursor.execute("DELETE FROM news WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
+                conn.commit()
 
-            recordId = cursor.lastrowid
+                cursor.execute("INSERT INTO news (title, url, media, published_at) VALUES (%s, %s, %s, %s)", (title, url, media, published_at_obj))
+                conn.commit()
+                recordId = cursor.lastrowid
 
-            cursor.close()
-            conn.close()
+                cursor.close()
+                conn.close()
 
-            return jsonify({"results": {"id": recordId}, "status": "CREATED", "message": None}), 201
+                return jsonify({"results": {"id": recordId}, "status": "CREATED", "message": None}), 201
         else:
 
             cursor.close()
