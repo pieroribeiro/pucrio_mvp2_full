@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `cotacoes` (
     `symbol` VARCHAR(10) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
     `value` DECIMAL(10, 2) NOT NULL,
+    `variation` DECIMAL(10, 2) NOT NULL,
     `type` VARCHAR(20) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

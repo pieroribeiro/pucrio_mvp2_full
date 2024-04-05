@@ -42,14 +42,15 @@ function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
   fetch(endpoint, {headers: {"accept": "application/json", "Content-type": "application/json"}})
     .then(res => res.json())
     .then(res => {
-      const data = res.results.map(item => parseFloat(item.value))
-      const graphData = res.results.map(item => {return {x: item.created_at, y: parseFloat(item.value)}})
-      const container = $("#graphics")
-
-      if (data[data.length - 2]) {
+      if (res && res.results && res.results.length > 0) {
+        const data = res.results.map(item => parseFloat(item.value))
+        const graphData = res.results.map(item => {return {x: item.created_at, y: parseFloat(item.value)}})
+        const container = $("#graphics")
+        
         const containerID = res.results[0]["symbol"]
         const containerName = res.results[0]["name"]
-        const incrementValue = calculateIncrement(data[data.length - 2], data[data.length - 1])
+        const incrementValue = (parseFloat(res.results[res.results.length - 1]["variation"]) / 100)
+        // console.log(`incrementValue: ${formatIncrementFN(incrementValue / 100)}`)
 
         container.append(`
           <div class="col-6 grid-margin stretch-card">
@@ -62,7 +63,7 @@ function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
                   <div class="d-sm-flex align-items-center mt-4 justify-content-between">
                     <h2 class="me-2 fw-bold marketingOverview-value">${ formatValueFN('pt-BR', 'BRL', data[data.length - 1]) }</h2>
                     <h4 class="me-2">BRL</h4>
-                    <h4 class="marketingOverview-value-increment">${(parseInt(incrementValue) === 0) ? `` : `(${formatIncrementFN(incrementValue)})`}</h4>
+                    <h4 class="marketingOverview-value-increment">${(incrementValue === 0.00) ? `` : `(${formatIncrementFN(incrementValue)})`}</h4>
                   </div>
                 </div>
                 <div class="chartjs-bar-wrapper mt-3">

@@ -3,6 +3,7 @@ module.exports = (o) => {
         symbol: o.code || '',
         name: o.name || '',
         type: o.type || '',
-        value: parseFloat(o.high) || 0
+        variation: parseFloat(o.pctChange || 0),
+        value: parseFloat(o.ask || 0)
     }
 }
