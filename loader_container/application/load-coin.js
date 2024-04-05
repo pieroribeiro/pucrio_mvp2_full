@@ -42,7 +42,7 @@ const init = (apiEndpoint) => {
                         .then(res => res.json())
                         .then(resSave => {
                             if (resSave && resSave.status == 'CREATED') {
-                                console.log(`SAVE-COIN: Dados salvos com sucesso. Coin ${resSave.id}`, resSave)
+                                console.log(`SAVE-COIN: Dados salvos com sucesso. Coin ${resSave.results.id}`, resSave)
                             } else {
                                 console.log(`SAVE-COIN: [ERROR] Ocorreu um erro`, resSave)
                             }

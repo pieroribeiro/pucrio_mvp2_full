@@ -32,7 +32,7 @@ const init = (apiEndpoint) => {
                         .then(res => res.json())
                         .then(resSave => {        
                             if (resSave && resSave.status == 'CREATED') {                    
-                                console.log(`SAVE-NEWS: Dados salvos com sucesso. News ${resSave.id}`, resSave)
+                                console.log(`SAVE-NEWS: Dados salvos com sucesso. News ${resSave.results.id}`, resSave)
                             } else {
                                 console.log(`SAVE-NEWS: [ERROR] Ocorreu um erro`, resSave) 
                             }
