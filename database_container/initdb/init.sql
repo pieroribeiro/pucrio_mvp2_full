@@ -32,4 +32,4 @@ CREATE TABLE IF NOT EXISTS `news` (
 );
 
 INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) VALUES ('News API', 'news', 'https://newsapi.org/v2/top-headlines', '47a44c3467c84467a0ccd7ae0db9ad9b', 'country=br&category=business&pageSize=10', 1);
-INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) VALUES ('Awesome API', 'coin', 'https://economia.awesomeapi.com.br/json/last', '', 'BTC-BRL|crypto,ETH-BRL|crypto,USD-BRL|coin,EUR-BRL|coin,CAD-BRL|coin', 1);
+INSERT INTO apis (`name`, `symbol`, `url`, `api_key`, `load_symbols`, `active`) VALUES ('Awesome API', 'coin', 'https://economia.awesomeapi.com.br/json/last', '', 'BTC-BRL|crypto,ETH-BRL|crypto,USD-BRL|coin,EUR-BRL|coin,GBP-EUR|coin,CAD-BRL|coin', 1);
