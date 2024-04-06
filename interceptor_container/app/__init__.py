@@ -1121,7 +1121,7 @@ def create_api():
             active = data['active']
             load_symbols = data['load_symbols']
 
-            cursor.execute("INSERT INTO apis (name, symbol, url, api_key, load_symbols, active) VALUES (%s, %s, %s, %s)", (name, symbol, url, api_key, load_symbols, active))
+            cursor.execute("INSERT INTO apis (name, symbol, url, api_key, load_symbols, active) VALUES (%s, %s, %s, %s, %s, %s)", (name, symbol, url, api_key, load_symbols, active))
             conn.commit()
 
             recordId = cursor.lastrowid
