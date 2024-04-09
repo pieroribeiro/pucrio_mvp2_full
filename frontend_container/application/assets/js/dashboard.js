@@ -53,13 +53,15 @@ function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
                 <div class="d-sm-flex justify-content-between align-items-start">
                   <h4 class="card-title card-title-dash">Market Overview: ${containerName}</h4>
                 </div>
-                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
-                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                  <div class="d-sm-flex align-items-center justify-content-between">
                     <h2 class="me-2 fw-bold marketingOverview-value">Compra: ${ formatValueFN('pt-BR', 'BRL', data_buy[data_buy.length - 1]) }</h2>
                     <h4 class="me-2">BRL</h4>
                     <h4 class="marketingOverview-value-increment">${(incrementValue === 0.00) ? `` : `(${formatIncrementFN(incrementValue)})`}</h4>
                   </div>
-                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                </div>
+                <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                  <div class="d-sm-flex align-items-center justify-content-between">
                     <h2 class="me-2 fw-bold marketingOverview-value">Venda: ${ formatValueFN('pt-BR', 'BRL', data_sell[data_sell.length - 1]) }</h2>
                     <h4 class="me-2">BRL</h4>
                     <h4 class="marketingOverview-value-increment">${(incrementValue === 0.00) ? `` : `(${formatIncrementFN(incrementValue)})`}</h4>
@@ -77,9 +79,9 @@ function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
         const graph_buy = {
           label: 'Compra',
           data: graphData_buy,
-          backgroundColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.4)',
           borderWidth: 0.5,
-          borderColor: 'rgb(201, 203, 207)',
+          borderColor: 'rgba(201, 203, 207, 0.5)',
           fill: true,
           tension: 0.4
         }
@@ -87,9 +89,9 @@ function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
         const graph_sell = {
           label: 'Venda',
           data: graphData_sell,
-          backgroundColor: 'rgb(54, 162, 235)',
+          backgroundColor: 'rgba(54, 162, 235, 0.4)',
           borderWidth: 0.5,
-          borderColor: 'rgb(201, 203, 207)',
+          borderColor: 'rgba(201, 203, 207, 0.5)',
           fill: true,
           tension: 0.4
         }

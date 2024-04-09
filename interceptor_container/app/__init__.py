@@ -151,7 +151,7 @@ def get_cotacoes():
             cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
             conn.commit()
 
-            cursor.execute(f"SELECT id, symbol, name, value_buy, value_sell, variation, type, created_at FROM cotacoes ORDER BY created_at DESC LIMIT 1000")
+            cursor.execute(f"SELECT id, symbol, name, value_buy, value_sell, variation, type, created_at FROM cotacoes ORDER BY created_at DESC LIMIT 100")
             records = cursor.fetchall()
             results = []
             for (id, symbol, name, value_buy, value_sell, variation, type, created_at) in records:
@@ -211,7 +211,7 @@ def get_cotacoes_by_symbol(symbol):
             cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
             conn.commit()
 
-            cursor.execute("SELECT id, symbol, name, value_buy, value_sell, variation, type, created_at FROM cotacoes WHERE symbol = %s ORDER BY created_at ASC LIMIT 20", (symbol,))
+            cursor.execute("SELECT id, symbol, name, value_buy, value_sell, variation, type, created_at FROM cotacoes WHERE symbol = %s ORDER BY created_at ASC LIMIT 15", (symbol,))
             records = cursor.fetchall()
             results = []
             for (id, symbol, name, value_buy, value_sell, variation, type, created_at) in records:
@@ -704,16 +704,21 @@ def create_news():
                 published_at_obj = convertDatetime(data['published_at'], False, '%Y-%m-%dT%H:%M:%S')
             else:
                 published_at_obj = datetime.now()
+
+            cursor.execute("DELETE FROM news WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
+            conn.commit()
             
             cursor.execute("SELECT id FROM news WHERE url = %s LIMIT 1", (url,))
             existsRecord = cursor.fetchone()
             if existsRecord:
-                return jsonify({"results": {"id": existsRecord[0]}, "status": "ERROR", "message": "Record already exists"}), 409
-            else:
-
-                cursor.execute("DELETE FROM news WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
+                cursor.execute("UPDATE news SET title = %s, media = %s, published_at = %s WHERE url = %s", (title, media, published_at_obj, url))
                 conn.commit()
 
+                cursor.close()
+                conn.close()
+
+                return jsonify({"results": {"id": existsRecord[0]}, "status": "UPDATED", "message": None}), 201
+            else:
                 cursor.execute("INSERT INTO news (title, url, media, published_at) VALUES (%s, %s, %s, %s)", (title, url, media, published_at_obj))
                 conn.commit()
                 recordId = cursor.lastrowid
@@ -726,6 +731,7 @@ def create_news():
 
             cursor.close()
             conn.close()
+            
             return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
         return jsonify({"results": None, "status": "ERROR", "message": f"Error create_news: {str(e)}"}), 500
