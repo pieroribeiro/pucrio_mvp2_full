@@ -76,7 +76,9 @@ def get_cotacoes():
                     type: string
                 name: 
                     type: string
-                value: 
+                value_buy: 
+                    type: number
+                value_sell: 
                     type: number
                 variation: 
                     type: number
@@ -92,7 +94,9 @@ def get_cotacoes():
                     type: string
                 name: 
                     type: string
-                value: 
+                value_buy: 
+                    type: number
+                value_sell: 
                     type: number
                 variation: 
                     type: number
@@ -147,15 +151,16 @@ def get_cotacoes():
             cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
             conn.commit()
 
-            cursor.execute(f"SELECT id, symbol, name, value, variation, type, created_at FROM cotacoes ORDER BY created_at DESC LIMIT 1000")
+            cursor.execute(f"SELECT id, symbol, name, value_buy, value_sell, variation, type, created_at FROM cotacoes ORDER BY created_at DESC LIMIT 1000")
             records = cursor.fetchall()
             results = []
-            for (id, symbol, name, value, variation, type, created_at) in records:
+            for (id, symbol, name, value_buy, value_sell, variation, type, created_at) in records:
                 results.append({
                     "id": id,
                     "symbol": symbol,
                     "name": name,
-                    "value": float(value),
+                    "value_buy": float(value_buy),
+                    "value_sell": float(value_sell),
                     "variation": float(variation),
                     "type": type,
                     "created_at": convertDatetime(created_at)
@@ -206,15 +211,16 @@ def get_cotacoes_by_symbol(symbol):
             cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
             conn.commit()
 
-            cursor.execute("SELECT id, symbol, name, value, variation, type, created_at FROM cotacoes WHERE symbol = %s ORDER BY created_at ASC LIMIT 20", (symbol,))
+            cursor.execute("SELECT id, symbol, name, value_buy, value_sell, variation, type, created_at FROM cotacoes WHERE symbol = %s ORDER BY created_at ASC LIMIT 20", (symbol,))
             records = cursor.fetchall()
             results = []
-            for (id, symbol, name, value, variation, type, created_at) in records:
+            for (id, symbol, name, value_buy, value_sell, variation, type, created_at) in records:
                 results.append({
                     "id": id,
                     "symbol": symbol,
                     "name": name,
-                    "value": float(value),
+                    "value_buy": float(value_buy),
+                    "value_sell": float(value_sell),
                     "variation": float(variation),
                     "type": type,
                     "created_at": convertDatetime(created_at)
@@ -264,17 +270,18 @@ def get_cotacoes_by_id(id):
             cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
             conn.commit()
 
-            cursor.execute("SELECT id, symbol, name, value, variation, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
+            cursor.execute("SELECT id, symbol, name, value_buy, value_sell, variation, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
             record = cursor.fetchone()
             if record:
                 result = {
                     "id": record[0],
                     "symbol": record[1],
                     "name": record[2],
-                    "value": float(record[3]),
-                    "variation": float(record[4]),
-                    "type": record[5],
-                    "created_at": convertDatetime(record[6])
+                    "value_buy": float(record[3]),
+                    "value_sell": float(record[4]),
+                    "variation": float(record[5]),
+                    "type": record[6],
+                    "created_at": convertDatetime(record[7])
                 }
             else:
                 result = {}
@@ -325,14 +332,15 @@ def create_cotacao():
 
             symbol = data['symbol']
             name = data['name']
-            value = float(data['value'])
+            value_buy = float(data['value_buy'])
+            value_sell = float(data['value_sell'])
             variation = float(data['variation'])
             type = data['type']
             
             cursor.execute("DELETE FROM cotacoes WHERE DATE(created_at) < (NOW() - INTERVAL 1 DAY)")
             conn.commit()
 
-            cursor.execute("INSERT INTO cotacoes (symbol, name, value, variation, type) VALUES (%s, %s, %s, %s, %s)", (symbol, name, value, variation, type))
+            cursor.execute("INSERT INTO cotacoes (symbol, name, value_buy, value_sell, variation, type) VALUES (%s, %s, %s, %s, %s, %s)", (symbol, name, value_buy, value_sell, variation, type))
             conn.commit()
 
             recordId = cursor.lastrowid
@@ -347,7 +355,7 @@ def create_cotacao():
             conn.close()
             return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500            
     except Exception as e:
-        return jsonify({"results": None, "status": "ERROR", "message": f"Error create_item: {str(e)}"}), 500
+        return jsonify({"results": None, "status": "ERROR", "message": f"Error create_cotacao: {str(e)}"}), 500
 
 
 # Endpoint PUT: Atualiza um item existente
@@ -387,17 +395,18 @@ def update_cotacao(id):
 
             symbol = data['symbol']
             name = data['name']
-            value = data['value']
+            value_buy = data['value_buy']
+            value_sell = data['value_sell']
             variation = data['variation']
             type = data['type']
 
-            cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
+            cursor.execute("SELECT NULL FROM cotacoes WHERE id = %s LIMIT 1", (id,))
             actual_record = cursor.fetchone()
             status_message = 'NOT_FOUND'
             if actual_record:
-                cursor.execute("UPDATE cotacoes SET symbol = %s, name = %s, value = %s, variation = %s, type = %s WHERE id = %s LIMIT 1", (symbol, name, value, variation, type, id))
+                cursor.execute("UPDATE cotacoes SET symbol = %s, name = %s, value_buy = %s, value_sell = %s, variation = %s, type = %s WHERE id = %s LIMIT 1", (symbol, name, value_buy, value_sell, variation, type, id))
                 conn.commit()
-                cursor.execute("SELECT id, symbol, name, value, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
+                cursor.execute("SELECT id, symbol, name, value_buy, value_sell, type, created_at FROM cotacoes WHERE id = %s LIMIT 1", (id,))
                 new_record = cursor.fetchone()
                 status_message = "UPDATED"
             else:
