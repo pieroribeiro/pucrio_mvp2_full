@@ -225,6 +225,12 @@ A saída do comando será algo parecido:
 sammy sudo docker
 ```
 
+13. Instalar o Docker Compose:
+
+```
+$ sudo apt install docker-compose
+```
+
 ### Executar os comandos descritos aqui para instalar a aplicação.
 
 ```
