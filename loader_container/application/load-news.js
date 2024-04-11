@@ -31,7 +31,7 @@ const init = (apiEndpoint) => {
                         saveService('/news', model(resNotice))
                         .then(res => res.json())
                         .then(resSave => {        
-                            if (resSave && resSave.status == 'CREATED') {                    
+                            if (resSave && resSave.status != 'ERROR') {
                                 console.log(`SAVE-NEWS: Dados salvos com sucesso. News ${resSave.results.id}`, resSave)
                             } else {
                                 console.log(`SAVE-NEWS: [ERROR] Ocorreu um erro`, resSave) 
