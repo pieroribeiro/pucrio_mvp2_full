@@ -48,60 +48,10 @@ APIs externas conectadas ao projeto:
 
 API que servirá dados para o nosso frontend, contendo os seguintes endpoints:
 
-URL: http://localhost:3002
+Endereço de exposição do container: http://localhost:3002
 
+Documentação das APIs: [SWAGGER](http://localhost:3002/api-docs/)
 
-🚧 ENDPOINTS:
-
-
-```
-Descrição: Endpoint para verificação de status do serviço.
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /health
-```
-
-```
-Descrição: Endpoint para retornar dados de cotações das moedas e cripto-moedas
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /finance/:coin
-```
-
-```
-Descrição: Endpoint para retornar dados de notícias
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /news
-```
-
-```
-Descrição: Endpoint para retornar as apis cadastradas
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /api
-```
-
-```
-Descrição: Endpoint para retornar uma api cadastrada pelo ID
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /api/:id
-```
-
-```
-Descrição: Endpoint para atualizar uma api cadastrada
-Método HTTP: GET
-Exemplo de Requisição:
-💥 PUT /api/:id
-```
-
-```
-Descrição: Endpoint para excluir uma api cadastrada
-Método HTTP: DELETE
-Exemplo de Requisição:
-💥 DELETE /api/:id
-```
 
 # 🌐- Frontend ![Badge](https://img.shields.io/static/v1?label=Bootstrap&message=v3.0&color=orange) ![Badge](https://img.shields.io/static/v1?label=jQuery&message=v3.7.1&color=orange)
 

@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
         if (news) {
             res.status(200).json(news)
         } else {
-            res.status(404).json({status: 'DATA_NOT_FOUND'})
+            res.status(404).json({status: 'DATA_NOT_FOUND', message: ""})
         }
     } catch (e) {
         console.log(`[ERROR - LOAD INTERCEPTOR NEWS DATA]: ${e.message}`)
