@@ -48,7 +48,7 @@ APIs externas conectadas ao projeto:
 
 API que servirá dados para o nosso frontend, contendo os seguintes endpoints:
 
-URL: http://localhost:3002
+URL: (http://localhost:3002/)
 
 
 🚧 ENDPOINTS:
@@ -105,7 +105,7 @@ Exemplo de Requisição:
 
 # 🌐- Frontend ![Badge](https://img.shields.io/static/v1?label=Bootstrap&message=v3.0&color=orange) ![Badge](https://img.shields.io/static/v1?label=jQuery&message=v3.7.1&color=orange)
 
-URL: http://localhost:3003
+URL: (http://localhost:3003/)
 
 Exibição de 3 páginas:
 
