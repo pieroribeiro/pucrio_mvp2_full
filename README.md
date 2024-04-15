@@ -12,6 +12,9 @@ Segue abaixo o desenho esquemático da arquitetura:
 ![Image](/git-assets/img/infraestrutura-v1.0.1.png)
 
 
+##  ✅ - Trello do Projeto:
+https://trello.com/b/GTB6PDdR/mvp2-p%C3%B3s-gradua%C3%A7%C3%A3o-puc-rio
+
 # ✅ - Executar os comandos descritos aqui para instalar a aplicação e subir os containers, na raíz deste repositório:
 
 ```
