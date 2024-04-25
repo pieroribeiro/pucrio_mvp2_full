@@ -16,13 +16,7 @@ Segue abaixo o desenho esquemático da arquitetura:
 https://trello.com/b/GTB6PDdR/mvp2-p%C3%B3s-gradua%C3%A7%C3%A3o-puc-rio
 
 ###  ✅ - Instalar o Docker-Compose:
-https://www.hostinger.com.br/tutoriais/install-docker-ubuntu?ppc_campaign=google_search_generic_hosting_all&bidkw=defaultkeyword&lo=1001754&gad_source=1&gclid=Cj0KCQjw_qexBhCoARIsAFgBleun3Fnj8-xYASysi7P8daWuS77Un8xEyJK7D5w46dktu0Hykw0H7tUaAgKiEALw_wcB
-##### Passos para a instalação:
-
-```
-sudo apt-get update
-sudo apt-get install docker-compose-plugin
-```
+Siga o passo a passo da Instalação do Docker no final deste documento e após a instalação, instalar também o Docker-Compose
 
 ### ✅ - Executar os comandos descritos aqui para instalar a aplicação e subir os containers, na raíz deste repositório:
 
