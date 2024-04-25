@@ -27,15 +27,15 @@ sudo apt-get install docker-compose-plugin
 ### ✅ - Executar os comandos descritos aqui para instalar a aplicação e subir os containers, na raíz deste repositório:
 
 ```
-$ git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
-$ cd pucrio_mvp2_full/
-$ docker-compose up -d
+git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
+cd pucrio_mvp2_full/
+docker-compose up -d
 ```
 
 ### ✅ - Para cancelar a execução dos containers Docker, executar o seguinte comando na raíz deste repositório:
 
 ```
-$ docker-compose down -v
+docker-compose down -v
 ```
 
 > **PS**: Pelo fato de haver dependências entre os serviços e a criação de uma rede própria para estes, é altamente recomendável a execução através do docker-compose.yml e não separadamente.
@@ -159,37 +159,37 @@ Exibição de 3 páginas:
 1. Primeiro, atualize sua lista existente de pacotes:
    
 ```
-$ sudo apt update
+sudo apt update
 ```
 
 2. Instale alguns pacotes pré-requisito que deixam o apt usar pacotes pelo HTTPS:
 
 ```
-$ sudo apt install apt-transport-https ca-certificates curl software-properties-common
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
 ```
 
 3. Adicione a chave GPG para o repositório oficial do Docker no seu sistema:
 
 ```
-$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
 
 4. Adicione o repositório do Docker às fontes do APT:
 
 ```
-$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
 ```
 
 5. Atualize o banco de dados do pacote com os pacotes do Docker do recém adicionado repositório:
 
 ```
-$ sudo apt update
+sudo apt update
 ```
 
 6. Certifique-se de que você está prestes a instalar do repositório do Docker ao invés do repositório padrão do Ubuntu:
 
 ```
-$ apt-cache policy docker-ce
+apt-cache policy docker-ce
 ```
 
 7. Você verá um resultado assim, embora o número da versão para o Docker possa ser diferente:
@@ -206,13 +206,13 @@ docker-ce:
 8. Finalmente, instale o Docker:
 
 ```
-$ sudo apt install docker-ce
+sudo apt install docker-ce
 ```
 
 9. Verifique se ele está funcionando:
 
 ```
-$ sudo systemctl status docker
+sudo systemctl status docker
 ```
 
 O resultado deve ser similar ao mostrado a seguir, mostrando que o serviço está ativo e funcionando:
@@ -234,13 +234,13 @@ TriggeredBy: ● docker.socket
 10. Se você quiser evitar digitar sudo sempre que você executar o comando docker, adicione seu nome de usuário no grupo docker:
 
 ```
-$ sudo usermod -aG docker ${USER}
+sudo usermod -aG docker ${USER}
 ```
 
 11. Para inscrever o novo membro ao grupo, saia do servidor e logue novamente, ou digite o seguinte:
 
 ```
-$ su - ${USER}
+su - ${USER}
 ```
 
 Você será solicitado a digitar a senha do seu usuário para continuar.
@@ -248,7 +248,7 @@ Você será solicitado a digitar a senha do seu usuário para continuar.
 12. Confirme que seu usuário agora está adicionado ao grupo docker digitando:
 
 ```
-$ id -nG
+id -nG
 ```
 
 A saída do comando será algo parecido:
@@ -260,5 +260,5 @@ sammy sudo docker
 13. Instalar o Docker Compose:
 
 ```
-$ sudo apt install docker-compose
+sudo apt install docker-compose
 ```
