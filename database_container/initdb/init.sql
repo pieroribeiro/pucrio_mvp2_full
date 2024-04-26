@@ -16,8 +16,9 @@ CREATE TABLE IF NOT EXISTS `cotacoes` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `symbol` VARCHAR(10) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
-    `value` DECIMAL(10, 2) NOT NULL,
-    `variation` DECIMAL(10, 2) NOT NULL,
+    `value_buy` DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    `value_sell` DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    `variation` DECIMAL(10, 2) NOT NULL DEFAULT 0,
     `type` VARCHAR(20) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
