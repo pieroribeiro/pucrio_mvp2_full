@@ -125,6 +125,16 @@ TriggeredBy: ● docker.socket
 sudo docker run hello-world
 ```
 
+> 🔆 Se você quiser evitar digitar sudo sempre que você executar o comando docker, adicione seu nome de usuário no grupo docker:
+```
+sudo usermod -aG docker ${USER}
+```
+
+> 🔆 Para inscrever o novo membro ao grupo, saia do servidor e logue novamente, ou digite o seguinte:
+```
+su - ${USER}
+```
+
 > 🔆 Instalar o Docker-Compose:
 ```
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
