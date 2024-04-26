@@ -11,27 +11,6 @@ Segue abaixo o desenho esquemático da arquitetura:
 
 ![Image](/git-assets/img/infraestrutura-v1.0.1.png)
 
-
-###  ✅ - Trello do Projeto:
-https://trello.com/b/GTB6PDdR/mvp2-p%C3%B3s-gradua%C3%A7%C3%A3o-puc-rio
-
-### ✅ - Executar os comandos descritos aqui para instalar a aplicação e subir os containers, na raíz deste repositório:
-
-```
-$ git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
-$ cd pucrio_mvp2_full/
-$ docker-compose up -d
-```
-
-### ✅ - Para cancelar a execução dos containers Docker, executar o seguinte comando na raíz deste repositório:
-
-```
-$ docker-compose down -v
-```
-
-> **PS**: Pelo fato de haver dependências entre os serviços e a criação de uma rede própria para estes, é altamente recomendável a execução através do docker-compose.yml e não separadamente.
-
-
 # COMPONENTES DA ARQUITETURA:
 
 # 🌐- Database Container ![Badge](https://img.shields.io/static/v1?label=MySQL&message=v8.0&color=orange)
@@ -69,60 +48,10 @@ APIs externas conectadas ao projeto:
 
 API que servirá dados para o nosso frontend, contendo os seguintes endpoints:
 
-URL: (http://localhost:3002/)
+Endereço de exposição do container: [URL](http://localhost:3002/)
 
+Documentação das APIs: [SWAGGER](http://localhost:3002/api-docs/)
 
-🚧 ENDPOINTS:
-
-
-```
-Descrição: Endpoint para verificação de status do serviço.
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /health
-```
-
-```
-Descrição: Endpoint para retornar dados de cotações das moedas e cripto-moedas
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /finance/:coin
-```
-
-```
-Descrição: Endpoint para retornar dados de notícias
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /news
-```
-
-```
-Descrição: Endpoint para retornar as apis cadastradas
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /api
-```
-
-```
-Descrição: Endpoint para retornar uma api cadastrada pelo ID
-Método HTTP: GET
-Exemplo de Requisição:
-💥 GET /api/:id
-```
-
-```
-Descrição: Endpoint para atualizar uma api cadastrada
-Método HTTP: GET
-Exemplo de Requisição:
-💥 PUT /api/:id
-```
-
-```
-Descrição: Endpoint para excluir uma api cadastrada
-Método HTTP: DELETE
-Exemplo de Requisição:
-💥 DELETE /api/:id
-```
 
 # 🌐- Frontend ![Badge](https://img.shields.io/static/v1?label=Bootstrap&message=v3.0&color=orange) ![Badge](https://img.shields.io/static/v1?label=jQuery&message=v3.7.1&color=orange)
 
@@ -144,112 +73,92 @@ Exibição de 3 páginas:
 > 💥 Ter instalado o WSL no Windows ou mesmo poderá executar no Linux
 >
 > 💥 Ter instalado o Docker no WSL ou no Linux
+>
+> 💥 Ter instalado o Docker-Compose no WSL ou no Linux
 
 #### Para instalar o Docker no Ubuntu (WSL) / Linux:
-    
-1. Primeiro, atualize sua lista existente de pacotes:
-   
+
+
+
+> 🔆 Adicionar as chaves GPG Oficiais do Docker:
 ```
-$ sudo apt update
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 ```
 
-2. Instale alguns pacotes pré-requisito que deixam o apt usar pacotes pelo HTTPS:
-
+> 🔆 Adicionar o repositório ao APT Sources:
 ```
-$ sudo apt install apt-transport-https ca-certificates curl software-properties-common
-```
-
-3. Adicione a chave GPG para o repositório oficial do Docker no seu sistema:
-
-```
-$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
 ```
 
-4. Adicione o repositório do Docker às fontes do APT:
-
+> 🔆 Instalar os pacotes do Docker:
 ```
-$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
-```
-
-5. Atualize o banco de dados do pacote com os pacotes do Docker do recém adicionado repositório:
-
-```
-$ sudo apt update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin
 ```
 
-6. Certifique-se de que você está prestes a instalar do repositório do Docker ao invés do repositório padrão do Ubuntu:
-
+> 🔆 Verificar se o Docker foi instalado corretamente:
 ```
-$ apt-cache policy docker-ce
+sudo service docker status
 ```
-
-7. Você verá um resultado assim, embora o número da versão para o Docker possa ser diferente:
-
+A saída do comando deverá ser algo parecido com isso:
 ```
-docker-ce:
-  Installed: (none)
-  Candidate: 5:19.03.9~3-0~ubuntu-focal
-  Version table:
-     5:19.03.9~3-0~ubuntu-focal 500
-        500 https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
-```
-
-8. Finalmente, instale o Docker:
-
-```
-$ sudo apt install docker-ce
-```
-
-9. Verifique se ele está funcionando:
-
-```
-$ sudo systemctl status docker
-```
-
-O resultado deve ser similar ao mostrado a seguir, mostrando que o serviço está ativo e funcionando:
-
-```
-Output
 ● docker.service - Docker Application Container Engine
      Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
-     Active: active (running) since Tue 2020-05-19 17:00:41 UTC; 17s ago
+     Active: active (running) since Fri 2024-04-26 09:50:23 -03; 46min ago
 TriggeredBy: ● docker.socket
        Docs: https://docs.docker.com
-   Main PID: 24321 (dockerd)
-      Tasks: 8
-     Memory: 46.4M
+   Main PID: 5887 (dockerd)
+      Tasks: 10
+     Memory: 42.2M
      CGroup: /system.slice/docker.service
-             └─24321 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
 ```
 
-10. Se você quiser evitar digitar sudo sempre que você executar o comando docker, adicione seu nome de usuário no grupo docker:
-
+> 🔆 Executar uma imagem de teste:
 ```
-$ sudo usermod -aG docker ${USER}
-```
-
-11. Para inscrever o novo membro ao grupo, saia do servidor e logue novamente, ou digite o seguinte:
-
-```
-$ su - ${USER}
+sudo docker run hello-world
 ```
 
-Você será solicitado a digitar a senha do seu usuário para continuar.
-
-12. Confirme que seu usuário agora está adicionado ao grupo docker digitando:
-
+> 🔆 Se você quiser evitar digitar sudo sempre que você executar o comando docker, adicione seu nome de usuário no grupo docker:
 ```
-$ id -nG
+sudo usermod -aG docker ${USER}
 ```
 
-A saída do comando será algo parecido:
+> 🔆 Para inscrever o novo membro ao grupo, saia do servidor e logue novamente, ou digite o seguinte:
+```
+su - ${USER}
+```
+
+> 🔆 Instalar o Docker-Compose:
+```
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+sudo chmod 775 /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+```
+
+> 🔆 Verificar se o Docker-Compose foi isntalado corretamente:
+```
+docker-compose version
+```
+
+### Executar os comandos descritos aqui para instalar a aplicação.
 
 ```
-sammy sudo docker
+git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
+cd pucrio_mvp2_full/
+docker-compose up -d
 ```
 
-13. Instalar o Docker Compose:
+### Para cancelar a execução dos containers Docker, executar o seguinte comando:
 
 ```
-$ sudo apt install docker-compose
+docker-compose down -v
 ```
+
+> **PS**: Pelo fato de haver dependências entre os serviços e a criação de uma rede própria para estes, é altamente recomendável a execução através do docker-compose.yml e não separadamente.
