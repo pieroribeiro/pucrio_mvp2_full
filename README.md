@@ -73,6 +73,8 @@ Exibição de 3 páginas:
 > 💥 Ter instalado o WSL no Windows ou mesmo poderá executar no Linux
 >
 > 💥 Ter instalado o Docker no WSL ou no Linux
+>
+> 💥 Ter instalado o Docker-Compose no WSL ou no Linux
 
 #### Para instalar o Docker no Ubuntu (WSL) / Linux:
     
