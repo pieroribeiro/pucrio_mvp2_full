@@ -140,15 +140,15 @@ docker-compose version
 ### Executar os comandos descritos aqui para instalar a aplicação.
 
 ```
-$ git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
-$ cd pucrio_mvp2_full/
-$ docker-compose up -d
+git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
+cd pucrio_mvp2_full/
+docker-compose up -d
 ```
 
 ### Para cancelar a execução dos containers Docker, executar o seguinte comando:
 
 ```
-$ docker-compose down -v
+docker-compose down -v
 ```
 
 > **PS**: Pelo fato de haver dependências entre os serviços e a criação de uma rede própria para estes, é altamente recomendável a execução através do docker-compose.yml e não separadamente.
