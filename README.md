@@ -20,7 +20,7 @@ Siga o passo a passo da Instalação do Docker no final deste documento e após 
 
 PS: Para versões mais recentes do Docker, basta executar:
 ```
-docker copmose up
+docker componse up
 ```
 
 ### ✅ - Executar os comandos descritos aqui para instalar a aplicação e subir os containers, na raíz deste repositório:
@@ -28,8 +28,11 @@ docker copmose up
 ```
 git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
 cd pucrio_mvp2_full/
-docker-compose up -d
+docker componse up -d
 ```
+
+
+
 
 ### ✅ - Para cancelar a execução dos containers Docker, executar o seguinte comando na raíz deste repositório:
 
