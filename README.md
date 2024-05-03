@@ -18,6 +18,11 @@ https://trello.com/b/GTB6PDdR/mvp2-p%C3%B3s-gradua%C3%A7%C3%A3o-puc-rio
 ###  ✅ - Instalar o Docker-Compose:
 Siga o passo a passo da Instalação do Docker no final deste documento e após a instalação, instalar também o Docker-Compose
 
+PS: Para versões mais recentes do Docker, basta executar:
+```
+docker copmose up
+```
+
 ### ✅ - Executar os comandos descritos aqui para instalar a aplicação e subir os containers, na raíz deste repositório:
 
 ```
