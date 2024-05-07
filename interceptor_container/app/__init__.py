@@ -1197,15 +1197,15 @@ def update_api(id):
             conn.close()
 
             if len(new_record) > 0:
-                return jsonify({"results": new_record, "status": status_message, "message": None}), 200
+                return jsonify({"id": id, "status": status_message, "message": None}), 200
             else:
-                return jsonify({"results": None, "status": status_message, "message": None, "id": id, "new-record": {}}), 404
+                return jsonify({"id": None, "status": status_message, "message": None, "id": id, "new-record": {}}), 404
         else:
             cursor.close()
             conn.close()
-            return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
+            return jsonify({"id": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500  
     except Exception as e:
-        return jsonify({"results": None, "status": "ERROR", "message": f"Error update_api: {str(e)}"}), 500
+        return jsonify({"id": None, "status": "ERROR", "message": f"Error update_api: {str(e)}"}), 500
 
 
 # Endpoint DELETE: Deleta uma api existente
@@ -1245,14 +1245,14 @@ def delete_api(id):
 
             cursor.close()
             conn.close()
-            return jsonify({"results": {"id": id}, "status": status_message, "message": None}), 200
+            return jsonify({"id": id, "status": status_message, "message": None}), 200
         else:
 
             cursor.close()
             conn.close()
-            return jsonify({"results": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
+            return jsonify({"id": None, "status": "ERROR", "message": "Conexão ao MySQL não estabelecida"}), 500
     except Exception as e:
-        return jsonify({"results": None, "status": "ERROR", "message": f"Error delete_api: {str(e)}"}), 500
+        return jsonify({"id": None, "status": "ERROR", "message": f"Error delete_api: {str(e)}"}), 500
 
 
 if __name__ == '__main__':
