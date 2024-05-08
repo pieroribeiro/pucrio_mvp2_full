@@ -11,6 +11,35 @@ Segue abaixo o desenho esquemático da arquitetura:
 
 ![Image](/git-assets/img/infraestrutura-v1.0.1.png)
 
+
+###  ✅ - Trello do Projeto:
+https://trello.com/b/GTB6PDdR/mvp2-p%C3%B3s-gradua%C3%A7%C3%A3o-puc-rio
+
+###  ✅ - Instalar o Docker-Compose:
+Siga o passo a passo da Instalação do Docker no final deste documento e após a instalação, instalar também o Docker-Compose
+
+PS: Para versões mais recentes do Docker, basta executar:
+```
+docker componse up
+```
+
+### ✅ - Executar os comandos descritos aqui para instalar a aplicação e subir os containers, na raíz deste repositório:
+
+```
+git clone git@github.com:pieroribeiro/pucrio_mvp2_full.git
+cd pucrio_mvp2_full/
+docker componse up -d
+```
+
+### ✅ - Para cancelar a execução dos containers Docker, executar o seguinte comando na raíz deste repositório:
+
+```
+docker-compose down -v
+```
+
+> **PS**: Pelo fato de haver dependências entre os serviços e a criação de uma rede própria para estes, é altamente recomendável a execução através do docker-compose.yml e não separadamente.
+
+
 # COMPONENTES DA ARQUITETURA:
 
 # 🌐- Database Container ![Badge](https://img.shields.io/static/v1?label=MySQL&message=v8.0&color=orange)
@@ -77,8 +106,6 @@ Exibição de 3 páginas:
 > 💥 Ter instalado o Docker-Compose no WSL ou no Linux
 
 #### Para instalar o Docker no Ubuntu (WSL) / Linux:
-
-
 
 > 🔆 Adicionar as chaves GPG Oficiais do Docker:
 ```
@@ -162,3 +189,4 @@ docker-compose down -v
 ```
 
 > **PS**: Pelo fato de haver dependências entre os serviços e a criação de uma rede própria para estes, é altamente recomendável a execução através do docker-compose.yml e não separadamente.
+
