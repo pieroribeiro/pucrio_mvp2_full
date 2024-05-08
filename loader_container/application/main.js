@@ -13,7 +13,7 @@ const executarScript = (scriptName) => {
         if (stderr) {
             console.log(`Erro de execução: ${stderr}`);
         }
-    });    
+    });
 }
 
 schedule.scheduleJob(timeToExecuteCoin, () => executarScript('load-coin.js'));

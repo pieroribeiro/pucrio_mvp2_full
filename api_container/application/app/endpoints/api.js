@@ -22,7 +22,7 @@ routes.delete("/:id([0-9]+)", async (req, res) => {
     try {
         const APIResponse = await requestInterceptorApi.remove(req.params.id)
         let statusCode = 404
-        if (APIResponse && APIResponse["id"] && APIResponse["id"] > 0) {
+        if (APIResponse && APIResponse["results"] && APIResponse["results"]["id"] && parseInt(APIResponse["results"]["id"]) > 0) {
             statusCode = 200
         }
 
@@ -37,7 +37,7 @@ routes.put("/:id([0-9]+)", async (req, res) => {
     try {
         const APIResponse = await requestInterceptorApi.update(req.params.id, req.body)
         let statusCode = 500
-        if (APIResponse && APIResponse["id"] && APIResponse["id"] > 0) {
+        if (APIResponse && APIResponse["results"] && APIResponse["results"]["id"] && parseInt(APIResponse["results"]["id"]) > 0) {
             statusCode = 200
         }
 

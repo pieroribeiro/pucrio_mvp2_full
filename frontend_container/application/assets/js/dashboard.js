@@ -187,7 +187,7 @@ function listAPIsActions () {
       fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'DELETE', headers: {"accept": "application/json", "Content-type": "application/json"}})
         .then(res => res.json())
         .then(res => {
-          if (res && res.status && res.id && res.status === 'OK' && res.id > 0) {
+          if (res && res.status && res.status === 'OK' && res.results && res.results.id > 0) {
             showAlert(`A API ${data["name"]} (${res.id}) foi excluída.`, 'success')
             loadListAPIs()
           } else {
