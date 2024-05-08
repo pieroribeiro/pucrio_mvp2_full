@@ -38,15 +38,8 @@ const remove = (id) => {
         Fetch(url, {method: 'DELETE', headers:{'accept': 'application/json', 'Content-type': 'application/json'}})
             .then(res => res.json())
             .then(res => {
-                if (res && res.id && res.status) {
-                    switch (res.status) {
-                        case 'OK':
-                            return resolve({id: res.id, status: 'OK', message: null})
-                        case 'ERROR':
-                            return reject({id: -1, status: 'ERROR', message: res.message})
-                        default:
-                            return resolve({id: 0, status: `ITEM_NOT_FOUND`, message: null})
-                    }
+                if (res && res.status) {
+                    return resolve(res)
                 } else {
                     return reject({id: -2, status: 'ERROR', message: 'An error has occurred'})
                 }
@@ -64,15 +57,9 @@ const update = (id, data) => {
         Fetch(url, {method: 'PUT', body: JSON.stringify(modelSave(data)), headers:{'accept': 'application/json', 'Content-type': 'application/json'}})
             .then(res => res.json())
             .then(res => {
-                if (res && res.id && res.status) {
-                    switch (res.status) {
-                        case 'OK':
-                            return resolve({id: res.id, status: res.status, message: null})
-                        case 'ERROR':
-                            return reject({id: -1, status: res.status, message: res.message})
-                        default:
-                            return resolve({id: 0, status: res.status, message: null})
-                    }
+                if (res && res.status) {
+                    return resolve(res)                    
+                    
                 } else {
                     console.log(res)
                     return reject({id: -2, status: 'ERROR', message: 'An error has occurred'})

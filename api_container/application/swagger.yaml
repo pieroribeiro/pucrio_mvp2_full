@@ -1,0 +1,305 @@
+swagger: "2.0"
+info:
+  title: Sample API
+  description: API description in Markdown.
+  version: 1.0.0
+host: localhost:3002
+basePath: /
+schemes:
+  - http
+
+definitions:
+  Coin:
+    type: object
+    properties:
+      name: 
+        type: string
+      symbol:
+        type: string
+      value: 
+        type: number
+      variation: 
+        type: number
+      created_at: 
+        type: string
+        format: date-time
+  CoinList:
+    type: object
+    properties:
+      results: 
+        type: array
+        items: 
+          $ref: '#/definitions/Coin'
+  CoinNotFound:
+    type: object
+    properties:
+      status: 
+        type: string
+      message:
+        type: string
+  CoinError:
+    type: object
+    properties:
+      status: 
+        type: string
+      message:
+        type: string
+  News:
+    type: object
+    properties:
+      title: 
+        type: string
+      media:
+        type: string
+      url: 
+        type: number
+      published_at: 
+        type: string
+        format: date-time
+  NewsList:
+    type: object
+    properties:
+      results: 
+        type: array
+        items: 
+          $ref: '#/definitions/News'
+  NewsNotFound:
+    type: object
+    properties:
+      status: 
+        type: string
+      message:
+        type: string
+  NewsError:
+    type: object
+    properties:
+      status: 
+        type: string
+      message:
+        type: string
+  API:
+    type: object
+    properties:
+      id:
+        type: integer
+      name: 
+        type: string
+      symbol:
+        type: string
+      url: 
+        type: string
+      api_key: 
+        type: string
+      load_symbols: 
+        type: string
+      active: 
+        type: integer
+        minimum: 0
+        maximum: 1
+      created_at: 
+        type: string
+        format: date-time
+  APIDeleteOne:
+    type: object
+    properties:
+      id: 
+        type: integer
+      status:
+        type: string
+      message:
+        type: string
+  APIGetOne:
+    type: object
+    properties:
+      results: 
+        type: object
+        schema:
+          $ref: '#/definitions/API'
+      status:
+        type: string
+      message:
+        type: string
+  APIUpdate:
+    type: object
+    properties:
+      name: 
+        type: string
+      symbol:
+        type: string
+      url: 
+        type: string
+      api_key: 
+        type: string
+      load_symbols: 
+        type: string
+      active: 
+        type: integer
+        minimum: 0
+        maximum: 1
+  APIList:
+    type: object
+    properties:
+      results: 
+        type: array
+        items: 
+          $ref: '#/definitions/API'
+  APINotFound:
+    type: object
+    properties:
+      status: 
+        type: string
+      message:
+        type: string
+  APIError:
+    type: object
+    properties:
+      status: 
+        type: string
+      message:
+        type: string
+
+paths:
+  /health:
+    get:
+      summary: Retorna o status do serviço
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+  /finance/{coin}:
+    get:
+      summary: Retorna a cotação pelo símbolo da moeda
+      parameters:
+        - in: path
+          name: coin
+          required: true
+          type: string
+          description: Símbolo da moeda
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema: 
+            $ref: '#/definitions/CoinList'
+        404:
+          description: Não encontrado
+          schema: 
+            $ref: '#/definitions/CoinNotFound'
+        500:
+          description: Erro Interno
+          schema: 
+            $ref: '#/definitions/CoinError'
+  /news:
+    get:
+      summary: Retorna as últimas notícias
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema: 
+            $ref: '#/definitions/NewsList'
+        404:
+          description: Não encontrado
+          schema: 
+            $ref: '#/definitions/NewsNotFound'
+        500:
+          description: Erro Interno
+          schema: 
+            $ref: '#/definitions/NewsError'
+  /api:
+    get:
+      summary: Retorna todas as APIs cadastradas
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema: 
+            $ref: '#/definitions/APIList'
+        404:
+          description: Não encontrado
+          schema: 
+            $ref: '#/definitions/APINotFound'
+        500:
+          description: Erro Interno
+          schema: 
+            $ref: '#/definitions/APIError'
+  /api/{id}:
+    get:
+      summary: Retorna todas as APIs cadastradas
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: ID da API
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema: 
+            $ref: '#/definitions/APIGetOne'
+        404:
+          description: Não encontrado
+          schema: 
+            $ref: '#/definitions/APINotFound'
+        500:
+          description: Erro Interno
+          schema: 
+            $ref: '#/definitions/APIError'
+    delete:
+      summary: Delete uma API cadastradas pelo ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: ID da API
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema: 
+            $ref: '#/definitions/APIDeleteOne'
+        404:
+          description: Não encontrado
+          schema: 
+            $ref: '#/definitions/APINotFound'
+        500:
+          description: Erro Interno
+          schema: 
+            $ref: '#/definitions/APIError'
+    put:
+      summary: Atualiza uma API cadastradas pelo ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: ID da API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+            $ref: '#/definitions/APIUpdate'
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema: 
+            $ref: '#/definitions/APIDeleteOne'
+        404:
+          description: Não encontrado
+          schema: 
+            $ref: '#/definitions/APINotFound'
+        500:
+          description: Erro Interno
+          schema: 
+            $ref: '#/definitions/APIError'

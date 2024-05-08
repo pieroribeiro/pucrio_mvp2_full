@@ -7,21 +7,13 @@ const loadGraph = (container, data) => {
   return new Chart(marketingOverviewCanvas, {
     type: 'line',
     data: {
-      datasets: [{
-        label: 'Valores',
-        data: data,
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderWidth: 0.5,
-        borderColor: 'rgba(75, 192, 192, 0.6)',
-        fill: true,
-        tension: 0.4
-      }]
+      datasets: data
     },
     options: {
       responsive: true,
       plugins: {
         legend: {
-          display: false,
+          display: true,
         }
       }
     }
@@ -43,8 +35,10 @@ function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
     .then(res => res.json())
     .then(res => {
       if (res && res.results && res.results.length > 0) {
-        const data = res.results.map(item => parseFloat(item.value))
-        const graphData = res.results.map(item => {return {x: item.created_at, y: parseFloat(item.value)}})
+        const data_buy = res.results.map(item => parseFloat(item.value_buy))
+        const data_sell = res.results.map(item => parseFloat(item.value_sell))
+        const graphData_buy = res.results.map(item => {return {x: item.created_at, y: parseFloat(item.value_buy)}})
+        const graphData_sell = res.results.map(item => {return {x: item.created_at, y: parseFloat(item.value_sell)}})
         const container = $("#graphics")
         
         const containerID = res.results[0]["symbol"]
@@ -59,9 +53,16 @@ function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
                 <div class="d-sm-flex justify-content-between align-items-start">
                   <h4 class="card-title card-title-dash">Market Overview: ${containerName}</h4>
                 </div>
-                <div class="d-sm-flex align-items-center mt-1 justify-content-between">
-                  <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                    <h2 class="me-2 fw-bold marketingOverview-value">${ formatValueFN('pt-BR', 'BRL', data[data.length - 1]) }</h2>
+                <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                  <div class="d-sm-flex align-items-center justify-content-between">
+                    <h2 class="me-2 fw-bold marketingOverview-value">Compra: ${ formatValueFN('pt-BR', 'BRL', data_buy[data_buy.length - 1]) }</h2>
+                    <h4 class="me-2">BRL</h4>
+                    <h4 class="marketingOverview-value-increment">${(incrementValue === 0.00) ? `` : `(${formatIncrementFN(incrementValue)})`}</h4>
+                  </div>
+                </div>
+                <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                  <div class="d-sm-flex align-items-center justify-content-between">
+                    <h2 class="me-2 fw-bold marketingOverview-value">Venda: ${ formatValueFN('pt-BR', 'BRL', data_sell[data_sell.length - 1]) }</h2>
                     <h4 class="me-2">BRL</h4>
                     <h4 class="marketingOverview-value-increment">${(incrementValue === 0.00) ? `` : `(${formatIncrementFN(incrementValue)})`}</h4>
                   </div>
@@ -74,8 +75,28 @@ function loadCoinValues (endpoint, formatValueFN, formatIncrementFN) {
           </div>
         `)
         writeIncrement (`#card-${containerID}`, incrementValue)
+
+        const graph_buy = {
+          label: 'Compra',
+          data: graphData_buy,
+          backgroundColor: 'rgba(255, 99, 132, 0.4)',
+          borderWidth: 0.5,
+          borderColor: 'rgba(201, 203, 207, 0.5)',
+          fill: true,
+          tension: 0.4
+        }
+
+        const graph_sell = {
+          label: 'Venda',
+          data: graphData_sell,
+          backgroundColor: 'rgba(54, 162, 235, 0.4)',
+          borderWidth: 0.5,
+          borderColor: 'rgba(201, 203, 207, 0.5)',
+          fill: true,
+          tension: 0.4
+        }
         
-        loadGraph(`marketingOverview-${containerID}`, graphData)
+        loadGraph(`marketingOverview-${containerID}`, [graph_buy, graph_sell])
       }
     })
     .catch(e => {
@@ -166,7 +187,7 @@ function listAPIsActions () {
       fetch(`${api_host}:${api_host_port}/api/${data["id"]}`, {method: 'DELETE', headers: {"accept": "application/json", "Content-type": "application/json"}})
         .then(res => res.json())
         .then(res => {
-          if (res && res.status && res.id && res.status === 'OK' && res.id > 0) {
+          if (res && res.status && res.status === 'OK' && res.results && res.results.id > 0) {
             showAlert(`A API ${data["name"]} (${res.id}) foi excluída.`, 'success')
             loadListAPIs()
           } else {

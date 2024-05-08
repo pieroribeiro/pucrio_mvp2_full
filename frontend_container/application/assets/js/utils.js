@@ -9,7 +9,7 @@ function showAlert(message, type) {
 }
 
 const formatCurrency = (lang = 'pt-BR', coin= 'BRL', value = 0) => {
-    return new Intl.NumberFormat(lang, { style: "currency", currency: coin, minimumFractionDigits: 2, maximumFractionDigits: 2}).format(value)
+    return new Intl.NumberFormat(lang, { style: "currency", currency: coin}).format(value)
 }
 
 const formatPercent = (val) => {
